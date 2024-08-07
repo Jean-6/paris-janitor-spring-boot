@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.awt.*;
+import java.util.List;
+
 
 @Setter
 @Getter
@@ -20,6 +21,6 @@ public class PropertyDto {
     private double rent;
     private String description;
     private Address address;
-    private List images;
+    private List <ImageDto> images;
     private String userId;
 }

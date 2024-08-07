@@ -8,7 +8,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.awt.*;
+import java.util.List;
+
 
 @Setter
 @Getter
@@ -25,6 +26,6 @@ public class Property {
     private double rent;
     private String description;
     private Address address;
-    private List images;
+    private List<Image>  images;
     private String userId;
 }
