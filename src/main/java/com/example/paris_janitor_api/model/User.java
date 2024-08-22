@@ -16,14 +16,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Document(collection = "user")
 public class User {
-
     @Id
     private String id;
-
-    @Field(value = "firstname")
-    private String fisrtname;
-    @Field(value = "surname")
-    private String surname;
+    @Field(value = "username")
+    private String username;
     @Field(value = "email")
     private String email;
     @Field(value = "password")
@@ -32,20 +28,18 @@ public class User {
     private LocalDateTime createdAt;
     @Field(value = "role")
     private String role;
-    @Field(value = "status")
-    private boolean status;
+    @Field(value = "active")
+    private boolean active;
 
     @Override
     public String toString() {
         return "User{" +
-                // "id='" + id + '\'' +
-                ", fisrtname='" + fisrtname + '\'' +
-                ", surname='" + surname + '\'' +
+                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", createdAt=" + createdAt +
                 ", role='" + role + '\'' +
-                ", status=" + status +
+                ", status=" + active +
                 '}';
     }
 }

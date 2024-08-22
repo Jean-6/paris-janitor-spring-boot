@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
@@ -15,12 +14,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Document(collection = "delivery")
 public class Delivery {
-
     @Id
     private String id;
     private String type ;
     private String description;
-    private LocalDateTime createdAt;
     private double price;
     
 
@@ -29,8 +26,9 @@ public class Delivery {
         return "Service{" +
                 "type='" + type + '\'' +
                 ", description='" + description + '\'' +
-                ", createdAt=" + createdAt +
+                //", createdAt=" + createdAt +
                 //", status=" + status +
                 '}';
         }
+
 }
