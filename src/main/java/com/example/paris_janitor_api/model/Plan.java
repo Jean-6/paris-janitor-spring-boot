@@ -1,26 +1,31 @@
 package com.example.paris_janitor_api.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "image")
-public class Image {
-    //private String url;
+@Document(collection = "plan")
+public class Plan implements InvoiceItem{
     @Id
     private String id;
-    private String propertyID;
-    private String filename;
-    private String fileType;
-    private long fileSize;
-    private String contentType;
-    private byte[] content;
+    private String name;
+    private List<String> description;
+    private Double monthlyPrice;
+    private Double annualPrice;
+    private String currency;
+
+    @Override
+    public double calculateTotalAmount() {
+        return 0;
+    }
 }
