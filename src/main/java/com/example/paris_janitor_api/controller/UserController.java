@@ -1,11 +1,12 @@
 package com.example.paris_janitor_api.controller;
 
-import com.example.paris_janitor_api.model.Delivery;
 import com.example.paris_janitor_api.model.User;
-import com.example.paris_janitor_api.service.DeliveryService;
 import com.example.paris_janitor_api.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -18,12 +19,33 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/")
-    public User save(@RequestBody User user) {
-        return userService.saveUser(user);
+    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Optional<User>> getUserById(@PathVariable String userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(userId));
     }
 
-    @GetMapping("/{userId}")
+    @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> save(@RequestBody User user) {
+        return  ResponseEntity.status(HttpStatus.OK).body(userService.saveUser(user));
+    }
+
+    @GetMapping(value = "/",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Iterable<User>> getUsers() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsers());
+    }
+
+    @DeleteMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<Void> deleteDelivery(@PathVariable String userId) {
+        try{
+            userService.deleteUser(userId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+
+    /*@GetMapping("/{userId}")
     public Optional<User> getUserById(@PathVariable String userId) {
         return userService.getUserById(userId);
     }
@@ -33,13 +55,18 @@ public class UserController {
         return userService.getUser();
     }
 
+    @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public User save(@RequestBody User user) {
+        return userService.saveUser(user);
+    }
+
+
     @DeleteMapping("/{userId}")
     public  void deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
     }
 
 
-    /*
     @GetMapping("/")
     public ResponseEntity<List<User>> getAllUsers() {
         List <User> users = userService.getAllUser();
