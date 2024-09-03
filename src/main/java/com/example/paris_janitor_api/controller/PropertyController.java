@@ -19,9 +19,9 @@ public class PropertyController {
     @Autowired
     private PropertyService propertyService;
 
-    @GetMapping(value = "/{propertyId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Optional<Property>> getPropertyById(@PathVariable String propertyId) {
-        return ResponseEntity.status(HttpStatus.OK).body(propertyService.getPropertyById(propertyId));
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Optional<Property>> getPropertyById(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(propertyService.getPropertyById(id));
     }
 
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -32,6 +32,11 @@ public class PropertyController {
     @GetMapping(value = "/",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<Property>> getProperties() {
         return ResponseEntity.status(HttpStatus.OK).body(propertyService.getProperties());
+    }
+
+    @GetMapping(value="/owner/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Iterable<Property>> getMyProperties(@PathVariable("userId") String userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(propertyService.getMyProperties(userId));
     }
 
     @DeleteMapping(value = "/{propertyId}", produces = MediaType.APPLICATION_JSON_VALUE)

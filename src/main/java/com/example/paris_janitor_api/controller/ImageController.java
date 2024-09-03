@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.example.paris_janitor_api.exception.FileDownloadException;
 import com.example.paris_janitor_api.exception.FileEmptyException;
 import com.example.paris_janitor_api.exception.FileUploadException;
+import com.example.paris_janitor_api.model.Image;
 import com.example.paris_janitor_api.service.ImageService;
 import com.example.paris_janitor_api.service.PropertyService;
 import com.example.paris_janitor_api.util.GenericResponse;
@@ -35,13 +36,14 @@ public class ImageController {
     private AmazonS3 amazonS3;
 
 
-    @PostMapping(value="/upload/{propertyId}",consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable String propertyId) throws FileEmptyException, FileUploadException, IOException {
+    @PostMapping(value="/upload",consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile multipartFile, @RequestParam("propId") String propId) throws FileEmptyException, FileUploadException, IOException {
 
-        boolean isPropertyExists = propertyService.existsPropertyById(propertyId);
+        log.debug("propId : "+propId);
+        boolean isPropertyExists = propertyService.existsPropertyById(propId);
         if(!isPropertyExists){
-            GenericResponse genericResponse = GenericResponse.builder()
-                    .message("ID property :"+propertyId+" does not exist")
+            GenericResponse<Object> genericResponse = GenericResponse.builder()
+                    .message("ID property :"+propId+" does not exist")
                     .isSuccess(false)
                     .status(404)
                     .build();
@@ -54,15 +56,15 @@ public class ImageController {
         boolean isValidFile = imageService.isValidFile(multipartFile);
         List<String> allowedExtensions= new ArrayList<>(Arrays.asList("png", "jpg", "jpeg"));
         if(isValidFile && allowedExtensions.contains(imageService.getFileExtension(multipartFile))){
-            String fileName = imageService.uploadFile(multipartFile,propertyId);
-            GenericResponse genericResponse = GenericResponse.builder()
+            String fileName = imageService.uploadFile(multipartFile,propId);
+            GenericResponse<Object> genericResponse = GenericResponse.builder()
                     .message("file uploaded successfully. File unique name =>" + fileName)
                     .isSuccess(true)
                     .status(200)
                     .build();
             return new ResponseEntity<>(genericResponse, HttpStatus.OK);
         }else{
-            GenericResponse genericResponse = GenericResponse.builder()
+            GenericResponse<Object> genericResponse = GenericResponse.builder()
                     .message("Invalid File. File extension or File name is not supported")
                     .isSuccess(false)
                     .status(400)
@@ -74,17 +76,39 @@ public class ImageController {
 
     @GetMapping(value="/download",produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> downloadFile(@RequestParam ("filename") String filename  )throws FileDownloadException, IOException{
-
         Object response = imageService.downloadFile(filename);
         if(response!=null){
             return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"" +filename + "\"").body(response);
         }else{
-            GenericResponse genericResponse = GenericResponse.builder()
+            GenericResponse<Object> genericResponse = GenericResponse.builder()
                     .message("File could not be downloaded")
                     .isSuccess(false)
                     .status(400)
                     .build();
             return new ResponseEntity<>(genericResponse,HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(value="/metadatas/{propId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponse<Object>> getImageMetadata(@PathVariable String propId){
+
+        List<Image> imageList = imageService.findImagesMetadata(propId);
+        if(imageList.isEmpty()){
+            GenericResponse<Object> genericResponse = GenericResponse.builder()
+                    .message("Property not found")
+                    .data(new ArrayList<>())
+                    .isSuccess(false)
+                    .status(404)
+                    .build();
+            return new ResponseEntity<>(genericResponse,HttpStatus.NOT_FOUND);
+        }else{
+            GenericResponse<Object> genericResponse = GenericResponse.builder()
+                    .message("Metadatas")
+                    .data(imageList)
+                    .isSuccess(true)
+                    .status(200)
+                    .build();
+            return new ResponseEntity<>(genericResponse,HttpStatus.OK);
         }
     }
 
