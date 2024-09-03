@@ -14,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -33,10 +38,11 @@ import java.util.Objects;
 public class ImageServiceImpl implements ImageService {
 
     @org.springframework.beans.factory.annotation.Value("${aws.bucket.name}")
-
     private String bucketName;
     @Autowired
     private final AmazonS3 s3Client;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
 
     @Override
@@ -60,8 +66,10 @@ public class ImageServiceImpl implements ImageService {
         img.setFileSize(multipartFile.getSize());
         img.setContentType(multipartFile.getContentType());
         img.setContent(multipartFile.getBytes());
-        img.setPropertyID(propertyId);
+        img.setPropertyId(propertyId);
+        img.setFileType(multipartFile.getContentType());
         //image.set
+        mongoTemplate.save(img);
         return  filename;
     }
 
@@ -117,6 +125,19 @@ public class ImageServiceImpl implements ImageService {
             return false;
         }
         return !multipartFile.getOriginalFilename().trim().equals("");
+    }
+
+    @Override
+    public List<Image> findImagesMetadata(String propertyId) {
+        log.debug("propId : "+propertyId);
+        Query query = new Query();
+        query.addCriteria(new Criteria("propertyId").is(propertyId));
+        List<Image> imageList = mongoTemplate
+                .find(query,Image.class);
+        if(imageList.isEmpty()){
+            return new ArrayList<>();
+        }
+        else return imageList;
     }
 
     private String generateFileName(MultipartFile multiPart) {

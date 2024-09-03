@@ -55,6 +55,16 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
+    public Iterable<Property> getMyProperties(String userId) {
+        try{
+            return propertyRepository.findPropertyByUserId(userId);
+        } catch(Exception exception){
+            throw new RuntimeException(exception.getMessage());
+        }
+    }
+
+
+    @Override
     public void deleteProperty(String propertyId) {
         Property property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new ResourceNotFoundException(propertyId));
