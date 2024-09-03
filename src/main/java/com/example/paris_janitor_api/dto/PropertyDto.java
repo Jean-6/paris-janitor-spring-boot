@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 
 @Setter
@@ -21,6 +21,6 @@ public class PropertyDto {
     private double rent;
     private String description;
     private Address address;
-    private List <ImageDto> images;
     private String userId;
+    private LocalDateTime createdAt;
 }

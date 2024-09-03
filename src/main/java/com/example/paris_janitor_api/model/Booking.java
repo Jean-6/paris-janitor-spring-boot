@@ -1,6 +1,7 @@
 package com.example.paris_janitor_api.model;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,24 +11,22 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "property")
-public class Property {
-
+@Document(collection = "booking")
+public class Booking {
     @Id
     private String id;
-    private String type ;
-    private double area;
-    private int pieces;
-    private double rent;
-    private String description;
-    private Address address;
-    private String userId;
-    private LocalDateTime createdAt;
+    @NotNull
+    private String title;
+    @NotNull
+    private LocalDateTime startDate;
+    @NotNull
+    private LocalDateTime endDate;
+    //@Field
+    @NotNull
+    private String color;
 }

@@ -17,7 +17,7 @@ public class Image {
     //private String url;
     @Id
     private String id;
-    private String propertyID;
+    private String propertyId;
     private String filename;
     private String fileType;
     private long fileSize;

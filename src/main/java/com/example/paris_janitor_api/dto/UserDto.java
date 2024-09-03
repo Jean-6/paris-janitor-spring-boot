@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -16,23 +18,23 @@ public class UserDto {
     @Id
     private String id;
 
-    private String fisrtname;
-    private String surname;
+    private String username;
     private String email;
     private String password;
+    private LocalDateTime createdAt;
     private String role;
-    private boolean status;
+    private boolean active;
 
     @Override
     public String toString() {
         return "UserDto{" +
-                "fisrtname='" + fisrtname + '\'' +
-                ", surname='" + surname + '\'' +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                //", createdAt=" + createdAt +
+                ", createdAt=" + createdAt +
                 ", role='" + role + '\'' +
-                ", status=" + status +
+                ", active=" + active +
                 '}';
     }
 }

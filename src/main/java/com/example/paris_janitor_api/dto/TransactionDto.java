@@ -11,11 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class SignupDto {
-
-    //private String firstname;
-    //private String surname;
-    private String username;
+public class TransactionDto {
     private String email;
-    private String password;
+    private String amount;
+    private String description;
 }
