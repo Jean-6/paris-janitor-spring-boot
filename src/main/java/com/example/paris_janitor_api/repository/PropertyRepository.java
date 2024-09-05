@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface PropertyRepository extends MongoRepository<Property,String> {
     Property findPropertyById(String id);
     Iterable<Property> findPropertyByUserId(String userId);
+    Iterable<Property> findPropertiesByUserId(String userId);
+    Iterable<Property> findPropertiesByUserIdIsNotLike(String userId);
 }
