@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -17,6 +19,7 @@ public class Delivery {
     private String type ;
     private String description;
     private double price;
+    private LocalDateTime createdAt;
     
 
     @Override

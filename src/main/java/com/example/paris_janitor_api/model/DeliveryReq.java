@@ -19,6 +19,7 @@ public class DeliveryReq implements InvoiceItem {
     @Id
     private String id;
     private String userId;
+    private String propertyId;
     private String type;
     private Status status;
     private LocalDateTime createdAt;

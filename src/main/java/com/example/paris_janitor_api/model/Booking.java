@@ -6,9 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
@@ -18,15 +16,20 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Document(collection = "booking")
 public class Booking {
-    @Id
-    private String id;
+    //@Id
+    //private String id;
     @NotNull
-    private String title;
+    private String propertyId;
     @NotNull
-    private LocalDateTime startDate;
+    private String userId;
     @NotNull
-    private LocalDateTime endDate;
-    //@Field
+    private int weekNumber;
+    @NotNull
+    private String dayOfWeek;
+    @NotNull
+    private String hourOfDay;
+    @NotNull
+    private LocalDateTime bookingDate;
     @NotNull
     private String color;
 }
