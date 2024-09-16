@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,17 +23,8 @@ public class DeliveryReq implements InvoiceItem {
     private String propertyId;
     private String type;
     private Status status;
+    @CreatedDate
     private LocalDateTime createdAt;
-
-    @Override
-    public String toString() {
-        return "ServiceRequest{" +
-                "id='" + id + '\'' +
-                ", clientName='" + userId + '\'' +
-                ", type='" + type + '\'' +
-                ", status='" + status + '\'' +
-                '}';
-    }
 
     @Override
     public double calculateTotalAmount() {
