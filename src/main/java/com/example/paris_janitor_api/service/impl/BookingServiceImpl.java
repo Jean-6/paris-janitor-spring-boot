@@ -1,8 +1,10 @@
 package com.example.paris_janitor_api.service.impl;
 
 import com.example.paris_janitor_api.model.Booking;
+import com.example.paris_janitor_api.repository.BookingRepository;
 import com.example.paris_janitor_api.service.BookingService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,9 +14,13 @@ import java.util.Random;
 @Service
 @Slf4j
 public class BookingServiceImpl  implements BookingService {
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
     @Override
     public Booking saveBooking(Booking booking) {
-        return null;
+        return bookingRepository.save(booking);
     }
 
     @Override
