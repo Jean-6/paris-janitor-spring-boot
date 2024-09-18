@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "deliveryRequest")
-public class DeliveryReq implements InvoiceItem {
+public class DeliveryRequest implements InvoiceItem {
     @Id
     private String id;
     private String userId;
