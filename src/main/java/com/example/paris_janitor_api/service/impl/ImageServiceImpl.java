@@ -46,7 +46,7 @@ public class ImageServiceImpl implements ImageService {
 
 
     @Override
-    public String uploadFile(MultipartFile multipartFile, String propertyId) throws FileUploadException, IOException {
+    public Image uploadFile(MultipartFile multipartFile, String propertyId) throws FileUploadException, IOException {
 
         File file = new File(multipartFile.getOriginalFilename());
         try(FileOutputStream fileOutputStream = new FileOutputStream(file)){
@@ -68,9 +68,8 @@ public class ImageServiceImpl implements ImageService {
         img.setContent(multipartFile.getBytes());
         img.setPropertyId(propertyId);
         img.setFileType(multipartFile.getContentType());
-        //image.set
-        mongoTemplate.save(img);
-        return  filename;
+        return  mongoTemplate.save(img);
+        //return  filename;
     }
 
     @Override
@@ -106,7 +105,7 @@ public class ImageServiceImpl implements ImageService {
             if(!contentType.isEmpty()){
                 switch(contentType){
                     case MediaType.IMAGE_JPEG_VALUE:
-                        return "jpeg";
+                        return "jpg";
                     case MediaType.IMAGE_PNG_VALUE:
                         return "png";
                     default:

@@ -9,8 +9,7 @@ import java.util.List;
 
 public interface ImageService {
 
-
-    String uploadFile(MultipartFile multipartFile,String propertyID) throws FileUploadException, IOException;
+    Image uploadFile(MultipartFile multipartFile, String propertyID) throws FileUploadException, IOException;
     Object downloadFile(String fileName) throws FileDownloadException, IOException;
     String getFileExtension(MultipartFile multipartFile);
     boolean isValidFile(MultipartFile multipartFile);
