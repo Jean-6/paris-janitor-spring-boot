@@ -36,8 +36,8 @@ public class ImageController {
     private AmazonS3 amazonS3;
 
 
-    @PostMapping(value="/upload",consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile multipartFile, @RequestParam("propId") String propId) throws FileEmptyException, FileUploadException, IOException {
+    @PostMapping(value="/upload/{propId}",consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile multipartFile,@PathVariable String propId) throws FileEmptyException, FileUploadException, IOException {
 
         log.debug("propId : "+propId);
         boolean isPropertyExists = propertyService.existsPropertyById(propId);
@@ -56,11 +56,12 @@ public class ImageController {
         boolean isValidFile = imageService.isValidFile(multipartFile);
         List<String> allowedExtensions= new ArrayList<>(Arrays.asList("png", "jpg", "jpeg"));
         if(isValidFile && allowedExtensions.contains(imageService.getFileExtension(multipartFile))){
-            String fileName = imageService.uploadFile(multipartFile,propId);
+            Image img = imageService.uploadFile(multipartFile,propId);
             GenericResponse<Object> genericResponse = GenericResponse.builder()
-                    .message("file uploaded successfully. File unique name =>" + fileName)
+                    .message("file uploaded successfully. File unique name =>" + img.getFileType())
                     .isSuccess(true)
                     .status(200)
+                    .data(img.getId())
                     .build();
             return new ResponseEntity<>(genericResponse, HttpStatus.OK);
         }else{

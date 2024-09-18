@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.Binary;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -14,7 +16,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document(collection = "image")
 public class Image {
-    //private String url;
     @Id
     private String id;
     private String propertyId;
@@ -23,4 +24,6 @@ public class Image {
     private long fileSize;
     private String contentType;
     private byte[] content;
+    @CreatedDate
+    private LocalDateTime createdAt;
 }

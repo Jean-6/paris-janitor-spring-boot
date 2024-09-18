@@ -7,6 +7,5 @@ public interface PropertyService {
     Optional<Property> getPropertyById(String propertyId);
     Iterable<Property> getProperties();
     Iterable<Property> getMyProperties(String userId);
-
     void deleteProperty(String propertyId);
 }
