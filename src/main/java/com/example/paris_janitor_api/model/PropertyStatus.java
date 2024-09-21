@@ -1,8 +1,6 @@
 package com.example.paris_janitor_api.model;
 
-public enum Status {
+public enum PropertyStatus {
     PENDING,
-    IN_PROGRESS,
-    COMPLETED
-
+    VALIDATED
 }

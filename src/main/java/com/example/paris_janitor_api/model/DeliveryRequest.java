@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,17 +16,21 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+
 @Document(collection = "deliveryRequest")
 public class DeliveryRequest implements InvoiceItem {
     @Id
     private String id;
+    @CreatedBy
     private String userId;
     private String propertyId;
     private String type;
-    private Status status;
+    private String description;
+    private RequestStatus requestStatus = RequestStatus.PENDING;
     @CreatedDate
     private LocalDateTime createdAt;
 
+    
     @Override
     public double calculateTotalAmount() {
         return 0;
