@@ -1,7 +1,6 @@
 package com.example.paris_janitor_api.service.impl;
 
-import com.example.paris_janitor_api.exception.BadRequestException;
-import com.example.paris_janitor_api.exception.ResourceNotFoundException;
+
 import com.example.paris_janitor_api.model.Property;
 import com.example.paris_janitor_api.repository.PropertyRepository;
 import com.example.paris_janitor_api.service.PropertyService;
@@ -15,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -42,42 +42,25 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public Property saveProperty(Property property) {
-        try {
-            return propertyRepository.save(property);
-        } catch (Exception exception) {
-            throw new BadRequestException(exception.getMessage());
+        return propertyRepository.save(property);
         }
-    }
 
     @Override
     public Optional<Property> getPropertyById(String propertyId) {
-        return  Optional.ofNullable(propertyRepository.findById(propertyId)
-                .orElseThrow(() -> new ResourceNotFoundException(propertyId)));
+        return propertyRepository.findById(propertyId);
     }
 
     @Override
-    public Iterable<Property> getProperties() {
-        try {
-            return propertyRepository.findAll();
-        } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage());
-        }
+    public List<Property> getProperties() {
+        return mongoTemplate.findAll(Property.class);
     }
 
     @Override
-    public Iterable<Property> getMyProperties(String userId) {
-        try{
-            return propertyRepository.findPropertyByUserId(userId);
-        } catch(Exception exception){
-            throw new RuntimeException(exception.getMessage());
-        }
+    public Property deleteProperty(String propertyId) {
+        Criteria criteria = new Criteria();
+        criteria.and("id").is(propertyId);
+        return mongoTemplate.findAndRemove(new Query().addCriteria(criteria),Property.class);
     }
 
 
-    @Override
-    public void deleteProperty(String propertyId) {
-        Property property = propertyRepository.findById(propertyId)
-                .orElseThrow(() -> new ResourceNotFoundException(propertyId));
-        propertyRepository.deleteById(propertyId);
-    }
 }
