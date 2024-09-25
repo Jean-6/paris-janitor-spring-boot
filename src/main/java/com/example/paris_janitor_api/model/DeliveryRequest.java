@@ -5,11 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Setter
@@ -26,11 +25,8 @@ public class DeliveryRequest implements InvoiceItem {
     private String propertyId;
     private String type;
     private String description;
-    private RequestStatus requestStatus = RequestStatus.PENDING;
-    @CreatedDate
-    private LocalDateTime createdAt;
+    private List<Stage> stage;
 
-    
     @Override
     public double calculateTotalAmount() {
         return 0;

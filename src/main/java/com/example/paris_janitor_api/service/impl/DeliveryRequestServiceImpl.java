@@ -1,14 +1,26 @@
 package com.example.paris_janitor_api.service.impl;
 
-import com.example.paris_janitor_api.exception.BadRequestException;
 import com.example.paris_janitor_api.exception.ResourceNotFoundException;
 import com.example.paris_janitor_api.model.DeliveryRequest;
+import com.example.paris_janitor_api.model.RequestStatus;
+import com.example.paris_janitor_api.model.Stage;
 import com.example.paris_janitor_api.repository.DeliveryRequestRepository;
 import com.example.paris_janitor_api.service.DeliveryRequestService;
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.UpdateDefinition;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,34 +28,34 @@ public class DeliveryRequestServiceImpl implements DeliveryRequestService {
 
     @Autowired
     private DeliveryRequestRepository deliveryRequestRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
-    public Page<DeliveryRequest> getDeliveriesRequest(int page, int size) {
-        return null;
+    public Page<DeliveryRequest> getDeliveriesRequestPerPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return deliveryRequestRepository.findAll(pageable);
     }
 
     @Override
     public DeliveryRequest saveDeliveryRequest(DeliveryRequest delivery) {
-        try {
-            return deliveryRequestRepository.save(delivery);
-        } catch (Exception exception) {
-            throw new BadRequestException(exception.getMessage());
-        }
+        Stage s =new Stage();
+        s.setStatus(RequestStatus.PENDING);
+        s.setCreatedAt(LocalDateTime.now());
+        List<Stage> stages = new ArrayList<>();
+        stages.add(s);
+        delivery.setStage(stages);
+        return deliveryRequestRepository.save(delivery);
     }
 
     @Override
-    public Optional<DeliveryRequest> getDeliveryRequestById(String deliveryRequestId) {
-        return Optional.ofNullable(deliveryRequestRepository.findById(deliveryRequestId)
-                .orElseThrow(() -> new ResourceNotFoundException(deliveryRequestId)));
+    public Optional<DeliveryRequest> getDeliveryRequestById(String id) {
+        return deliveryRequestRepository.findById(id);
     }
 
     @Override
-    public Iterable<DeliveryRequest> getDeliveriesRequest() {
-        try {
-            return deliveryRequestRepository.findAll();
-        } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage());
-        }
+    public List<DeliveryRequest> getDeliveriesRequest() {
+        return deliveryRequestRepository.findAll();
     }
 
     @Override
@@ -51,5 +63,24 @@ public class DeliveryRequestServiceImpl implements DeliveryRequestService {
         DeliveryRequest deliveryRequest = deliveryRequestRepository.findById(deliveryRequestId)
                 .orElseThrow(() -> new ResourceNotFoundException(deliveryRequestId));
         deliveryRequestRepository.deleteById(deliveryRequest.getId());
+    }
+
+    @Override
+    public Optional<DeliveryRequest> updateDeliveryRequestStage(String deliveryRequestId,RequestStatus status) {
+        Optional<DeliveryRequest> deliveryRequest = deliveryRequestRepository.findById(deliveryRequestId);
+        if(deliveryRequest.isPresent()){
+            Stage s = new Stage();
+            s.setStatus(status);
+            s.setCreatedAt(LocalDateTime.now());
+            deliveryRequest.get().getStage().add(s);
+
+            Query query = new Query();
+            query.addCriteria(Criteria.where("id").is(deliveryRequestId));
+
+            UpdateDefinition updateDefinition = new Update().set("stage",s);
+            mongoTemplate.updateFirst(query,updateDefinition, DeliveryRequest.class);
+            return deliveryRequest;
+        }
+        return Optional.empty();
     }
 }

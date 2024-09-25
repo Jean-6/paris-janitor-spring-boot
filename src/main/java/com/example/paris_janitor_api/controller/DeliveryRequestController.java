@@ -1,6 +1,9 @@
 package com.example.paris_janitor_api.controller;
 
+import com.example.paris_janitor_api.exception.BadRequestException;
+import com.example.paris_janitor_api.exception.ResourceNotFoundException;
 import com.example.paris_janitor_api.model.DeliveryRequest;
+import com.example.paris_janitor_api.model.RequestStatus;
 import com.example.paris_janitor_api.service.DeliveryRequestService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/deliveryRequest")
+@RequestMapping("/api/delivery-request")
 public class DeliveryRequestController {
 
     @Autowired
@@ -24,22 +28,53 @@ public class DeliveryRequestController {
     public ResponseEntity<Optional<Page<DeliveryRequest>>> getDeliveriesRequestPerPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return  ResponseEntity.status(HttpStatus.OK).body(Optional.ofNullable(deliveryRequestService.getDeliveriesRequest(page, size)));
+
+        try{
+            Page<DeliveryRequest> deliveryPage= deliveryRequestService.getDeliveriesRequestPerPage(page, size);
+            if(deliveryPage.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(Optional.of(deliveryPage));
+        }catch(BadRequestException badEx){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping(value="/",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<DeliveryRequest>> getDeliveriesRequest() {
-        return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestService.getDeliveriesRequest());
+        try{
+            List<DeliveryRequest> deliveryRequestList = deliveryRequestService.getDeliveriesRequest();
+            return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestList);
+        }catch (BadRequestException badEx){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
-    @GetMapping(value="/{deliveryRequestId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Optional<DeliveryRequest>> getDeliveryRequestById(@PathVariable String deliveryRequestId) {
-        return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestService.getDeliveryRequestById(deliveryRequestId));
+    @GetMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Optional<DeliveryRequest>> getDeliveryRequestById(@PathVariable String id) {
+        
+        if(id.isEmpty() || id.equals("null")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        try{
+            Optional<DeliveryRequest> deliveryRequest = deliveryRequestService.getDeliveryRequestById(id);
+            if(deliveryRequest.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestService.getDeliveryRequestById(id));
+        }catch (ResourceNotFoundException notFoundException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DeliveryRequest> save(@RequestBody DeliveryRequest deliveryRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestService.saveDeliveryRequest(deliveryRequest));
+        try{
+            DeliveryRequest request = deliveryRequestService.saveDeliveryRequest(deliveryRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(request);
+        }catch(BadRequestException badEx){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @DeleteMapping(value="/{deliveryRequestId}",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,6 +84,20 @@ public class DeliveryRequestController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+
+    @PatchMapping(value = "/update-request/{deliveryRequestId}/{status}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?>update(@PathVariable String deliveryRequestId, @PathVariable RequestStatus status) {
+        try{
+            Optional<DeliveryRequest> deliveryRequestUpdated= deliveryRequestService.updateDeliveryRequestStage(deliveryRequestId,status);
+            if(deliveryRequestUpdated.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestUpdated);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ressource Id :"+deliveryRequestId+"introuvable");
+        }catch(BadRequestException badEx){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Requête invalide");
         }
     }
 }

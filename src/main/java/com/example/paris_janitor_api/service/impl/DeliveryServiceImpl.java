@@ -35,11 +35,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public Iterable<Delivery> getDeliveries() {
-        try {
-            return deliveryRepository.findAll();
-        } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage());
-        }
+        return deliveryRepository.findAll();
     }
 
     public  void deleteDelivery(final String id) {
