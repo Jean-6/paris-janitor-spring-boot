@@ -41,7 +41,7 @@ public class DeliveryRequestController {
     }
 
     @GetMapping(value="/",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Iterable<DeliveryRequest>> getDeliveriesRequest() {
+    public ResponseEntity<List<DeliveryRequest>> getDeliveriesRequest() {
         try{
             List<DeliveryRequest> deliveryRequestList = deliveryRequestService.getDeliveriesRequest();
             return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestList);
@@ -78,17 +78,21 @@ public class DeliveryRequestController {
     }
 
     @DeleteMapping(value="/{deliveryRequestId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteDeliveryRequest(@PathVariable String deliveryRequestId) {
+    public ResponseEntity<?> deleteDeliveryRequest(@PathVariable String deliveryRequestId) {
         try{
-            deliveryRequestService.deleteDeliveryRequest(deliveryRequestId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            Optional<DeliveryRequest> optionalDeliveryRequest = deliveryRequestService.deleteDeliveryRequest(deliveryRequestId);
+            if(optionalDeliveryRequest.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body("Ressource id: " + deliveryRequestId+" supprimee");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ressource introuvable");
+
+        }catch (BadRequestException badEx){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Requête invalide");
         }
     }
 
 
-    @PatchMapping(value = "/update-request/{deliveryRequestId}/{status}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/update/{deliveryRequestId}/{status}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?>update(@PathVariable String deliveryRequestId, @PathVariable RequestStatus status) {
         try{
             Optional<DeliveryRequest> deliveryRequestUpdated= deliveryRequestService.updateDeliveryRequestStage(deliveryRequestId,status);

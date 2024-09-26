@@ -6,7 +6,6 @@ import com.example.paris_janitor_api.model.RequestStatus;
 import com.example.paris_janitor_api.model.Stage;
 import com.example.paris_janitor_api.repository.DeliveryRequestRepository;
 import com.example.paris_janitor_api.service.DeliveryRequestService;
-import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +14,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.data.mongodb.core.query.UpdateDefinition;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,7 +40,7 @@ public class DeliveryRequestServiceImpl implements DeliveryRequestService {
         Stage s =new Stage();
         s.setStatus(RequestStatus.PENDING);
         s.setCreatedAt(LocalDateTime.now());
-        List<Stage> stages = new ArrayList<>();
+        ArrayList<Stage> stages = new ArrayList<>();
         stages.add(s);
         delivery.setStage(stages);
         return deliveryRequestRepository.save(delivery);
@@ -59,14 +57,20 @@ public class DeliveryRequestServiceImpl implements DeliveryRequestService {
     }
 
     @Override
-    public void deleteDeliveryRequest(String deliveryRequestId) {
-        DeliveryRequest deliveryRequest = deliveryRequestRepository.findById(deliveryRequestId)
-                .orElseThrow(() -> new ResourceNotFoundException(deliveryRequestId));
-        deliveryRequestRepository.deleteById(deliveryRequest.getId());
+    public Optional<DeliveryRequest> deleteDeliveryRequest(String id) {
+        Optional<DeliveryRequest> optionalDeliveryRequest = deliveryRequestRepository.findById(id);
+        if(optionalDeliveryRequest.isEmpty()){
+            return Optional.empty();
+        }
+        Query query = new Query();
+        query.addCriteria(Criteria.where("id").is(optionalDeliveryRequest.get().getId()));
+        DeliveryRequest deliveryRequest=mongoTemplate.findAndRemove(query, DeliveryRequest.class);
+        return Optional.ofNullable(deliveryRequest);
     }
 
     @Override
     public Optional<DeliveryRequest> updateDeliveryRequestStage(String deliveryRequestId,RequestStatus status) {
+
         Optional<DeliveryRequest> deliveryRequest = deliveryRequestRepository.findById(deliveryRequestId);
         if(deliveryRequest.isPresent()){
             Stage s = new Stage();
@@ -77,8 +81,8 @@ public class DeliveryRequestServiceImpl implements DeliveryRequestService {
             Query query = new Query();
             query.addCriteria(Criteria.where("id").is(deliveryRequestId));
 
-            UpdateDefinition updateDefinition = new Update().set("stage",s);
-            mongoTemplate.updateFirst(query,updateDefinition, DeliveryRequest.class);
+            Update update = new Update().addToSet("stage",s);
+            mongoTemplate.updateFirst(query,update, DeliveryRequest.class);
             return deliveryRequest;
         }
         return Optional.empty();
