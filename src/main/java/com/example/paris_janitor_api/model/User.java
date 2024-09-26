@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -18,17 +18,11 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     private String id;
-    @Field(value = "username")
     private String username;
-    @Field(value = "email")
     private String email;
-    @Field(value = "password")
     private String password;
-    @Field(value = "createdAt")
     private LocalDateTime createdAt;
-    @Field(value = "role")
-    private String role;
-    @Field(value = "active")
+    private List<Roles> roles ; // Liste de rôles attribués à l'utilisateur (ex. "LESSOR","ADMIN","TRAVELER","PROVIDER")
     private boolean active;
 
     @Override
@@ -38,7 +32,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", createdAt=" + createdAt +
-                ", role='" + role + '\'' +
+                ", role='" + roles + '\'' +
                 ", status=" + active +
                 '}';
     }

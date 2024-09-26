@@ -3,16 +3,21 @@ package com.example.paris_janitor_api.service.impl;
 import com.example.paris_janitor_api.dto.SignupDto;
 import com.example.paris_janitor_api.exception.BadRequestException;
 import com.example.paris_janitor_api.exception.ResourceNotFoundException;
+import com.example.paris_janitor_api.model.Roles;
 import com.example.paris_janitor_api.model.User;
 import com.example.paris_janitor_api.repository.UserRepository;
 import com.example.paris_janitor_api.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -25,10 +30,29 @@ public class UserServiceImpl implements UserService  {
     private UserRepository userRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
+
+
+    @Override
+    public Page<User> getUsersPerPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<User> getUserById(String id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return mongoTemplate.findAll(User.class);
+    }
+
+
     /*@Autowired
     private PasswordEncoder passwordEncoder;
-*/
-    @Override
+    */
+    /*@Override
     public boolean checkIfUserExistsByUsername(String username) {
         return userRepository.existsUserByUsername(username);
     }
@@ -43,7 +67,7 @@ public class UserServiceImpl implements UserService  {
         User user = new User("",signupDto.getUsername(),
                 signupDto.getEmail(),
                 "",//passwordEncoder.encode(signupDto.getPassword()),
-                LocalDateTime.now(), "", false);
+                LocalDateTime.now(), Roles.ADMIN, false);
         return mongoTemplate.save(user);
     }
 
@@ -79,7 +103,7 @@ public class UserServiceImpl implements UserService  {
     }*/
 
     /**/
-    @Override
+    /*@Override
     public User saveUser(User user) {
         try {
             return userRepository.save(user);
@@ -105,6 +129,6 @@ public class UserServiceImpl implements UserService  {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(userId));
         userRepository.deleteById(user.getId());
-    }
+    }*/
     /**/
 }
