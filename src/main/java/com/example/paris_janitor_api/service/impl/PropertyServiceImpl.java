@@ -61,6 +61,4 @@ public class PropertyServiceImpl implements PropertyService {
         criteria.and("id").is(propertyId);
         return mongoTemplate.findAndRemove(new Query().addCriteria(criteria),Property.class);
     }
-
-
 }
