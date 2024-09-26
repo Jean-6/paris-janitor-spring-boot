@@ -5,11 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Setter
 @Getter
@@ -25,7 +26,9 @@ public class DeliveryRequest implements InvoiceItem {
     private String propertyId;
     private String type;
     private String description;
-    private List<Stage> stage;
+    private ArrayList<Stage> stage;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @Override
     public double calculateTotalAmount() {
