@@ -1,6 +1,7 @@
 package com.example.paris_janitor_api.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class Property {
     @CreatedBy
     private String userId;
     @CreatedDate
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
     private PropertyStatus status = PropertyStatus.PENDING;
 }

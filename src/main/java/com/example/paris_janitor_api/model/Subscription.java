@@ -1,10 +1,12 @@
 package com.example.paris_janitor_api.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,7 +22,11 @@ public class Subscription implements InvoiceItem{
     private String id;
     private String userId;
     private Plan plan;
+    @CreatedDate
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime startDate;
+    @CreatedDate
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime endDate;
 
     @Override

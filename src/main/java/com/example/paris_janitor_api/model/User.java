@@ -1,9 +1,11 @@
 package com.example.paris_janitor_api.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,22 +20,13 @@ import java.util.List;
 public class User {
     @Id
     private String id;
-    private String username;
-    private String email;
+    private Profile profile;
     private String password;
+    private String userId;
+    @CreatedDate
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
     private List<Roles> roles ; // Liste de rôles attribués à l'utilisateur (ex. "LESSOR","ADMIN","TRAVELER","PROVIDER")
     private boolean active;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", createdAt=" + createdAt +
-                ", role='" + roles + '\'' +
-                ", status=" + active +
-                '}';
-    }
 }

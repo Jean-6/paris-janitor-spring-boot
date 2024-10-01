@@ -1,4 +1,5 @@
 package com.example.paris_janitor_api.model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,17 +22,8 @@ public class Delivery {
     private String description;
     private double price;
     @CreatedDate
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
-    
 
-    @Override
-    public String toString() {
-        return "Service{" +
-                "type='" + type + '\'' +
-                ", description='" + description + '\'' +
-                //", createdAt=" + createdAt +
-                //", status=" + status +
-                '}';
-        }
 
 }
