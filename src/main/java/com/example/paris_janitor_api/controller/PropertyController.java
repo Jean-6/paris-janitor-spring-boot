@@ -56,6 +56,23 @@ public class PropertyController {
         }
     }
 
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Property>> getPropByUserId(@RequestParam String userId) {
+
+        if(userId.isEmpty() || userId.equals("null")){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        try{
+            List<Property> property = propertyService.getPropertyByUserId(userId);
+            if(property.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(propertyService.getPropertyByUserId(userId));
+        }catch(ResourceNotFoundException notFoundEx){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Property> save(@RequestBody Property property) {
         try{
