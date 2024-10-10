@@ -28,7 +28,7 @@ public class S3Service  {
 
     public String uploadFile(MultipartFile file) throws IOException {
 
-        String key = Paths.get("pdfs",file.getOriginalFilename()).toString();
+        String key = file.getOriginalFilename();
         /*PutObjectRequest putObjectRequest =PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
@@ -44,7 +44,6 @@ public class S3Service  {
                         .build(),
                 software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes())
         );
-
         return key;
     }
 

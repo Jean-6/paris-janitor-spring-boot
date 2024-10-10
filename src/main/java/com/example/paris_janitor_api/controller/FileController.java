@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/files")
+@RequestMapping("/api/file")
 public class FileController {
 
     private final S3Service s3Service;
@@ -33,10 +33,23 @@ public class FileController {
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<GenericResponse<String>> getFileUrl(@PathVariable String fileName) {
-        String key = "pdfs/"+fileName;
-        String url = this.s3Service.getFileUrl(key);
-        GenericResponse<String> genericResponse = new GenericResponse<>(true,"Download success",url);
-        return new ResponseEntity<>(genericResponse,HttpStatus.OK);
+        if(fileName.isEmpty()){
+            GenericResponse<String> genericResponse = new GenericResponse<>(false,"File name is empty");
+            return new ResponseEntity<>(genericResponse,HttpStatus.BAD_REQUEST);
+        }
+        try {
+            String url = this.s3Service.getFileUrl(fileName);
+            if (url.isEmpty()) {
+                GenericResponse<String> genericResponse = new GenericResponse<>(false,"File url is empty");
+                return new ResponseEntity<>(genericResponse,HttpStatus.NOT_FOUND);
+            }
+            GenericResponse<String> genericResponse = new GenericResponse<>(true,"Download success",url);
+            return new ResponseEntity<>(genericResponse,HttpStatus.OK);
+        }catch (Exception e){
+            GenericResponse<String> genericResponse = new GenericResponse<>(false,e.getMessage());
+            return new ResponseEntity<>(genericResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
     }
 
 }

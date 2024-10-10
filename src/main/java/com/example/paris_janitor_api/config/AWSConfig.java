@@ -4,7 +4,6 @@ package com.example.paris_janitor_api.config;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +25,7 @@ public class AWSConfig {
 
 
    @Bean
-    public AmazonS3 getAmazonS3Client(){
+    public AmazonS3 amazonS3Client(){
         AWSCredentials credentials = new BasicAWSCredentials(
                 accessKey,
                 secretKey
@@ -36,4 +35,5 @@ public class AWSConfig {
                 .withRegion(regionName) //Regions.US_EAST_1
                 .build();
     }
+
 }
