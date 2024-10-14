@@ -1,6 +1,8 @@
 package com.example.paris_janitor_api.service.impl;
 
+import com.amazonaws.util.StringUtils;
 import com.example.paris_janitor_api.dto.SignupDto;
+import com.example.paris_janitor_api.dto.UserSearchDto;
 import com.example.paris_janitor_api.model.User;
 import com.example.paris_janitor_api.repository.UserRepository;
 import com.example.paris_janitor_api.service.UserService;
@@ -11,7 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
+import org.springframework.data.mongodb.core.query.Query;
+
+
+
 
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +60,43 @@ public class UserServiceImpl implements UserService  {
     public User saveUser(SignupDto signupDto) {
         User user=modelMapper.map(signupDto, User.class);
         return mongoTemplate.insert(user);
+    }
+
+    @Override
+    public List<User> searchUserByCriteria(UserSearchDto userSearchDto) {
+
+        Query query = new Query();
+        if(userSearchDto.getEmail()!=null && !userSearchDto.getEmail().isEmpty()){
+            query.addCriteria(Criteria.where("profile.email").is(userSearchDto.getEmail()));
+        }
+        if(userSearchDto.getUsername()!=null && !userSearchDto.getUsername().isEmpty()){
+            query.addCriteria(Criteria.where("profile.username").is(userSearchDto.getUsername()));
+        }
+        if(userSearchDto.getRole()!=null && !userSearchDto.getRole().isEmpty()){
+            switch (userSearchDto.getRole()){
+                case "ADMIN":
+                    query.addCriteria(Criteria.where("roles").is("ADMIN"));
+                    break;
+                case "LESSOR":
+                    query.addCriteria(Criteria.where("roles").is("LESSOR"));
+                    break;
+                case "TRAVELER":
+                    query.addCriteria(Criteria.where("roles").is("TRAVELER"));
+                    break;
+                case "PROVIDER":
+                    query.addCriteria(Criteria.where("roles").is("PROVIDER"));
+                default:
+                    break;
+            }
+        }
+        if( userSearchDto.isStatus()){
+            query.addCriteria(Criteria.where("active").is(true));
+        }
+        if( !userSearchDto.isStatus()){
+            query.addCriteria(Criteria.where("active").is(false));
+        }
+
+        return mongoTemplate.find(query,User.class);
     }
 
 

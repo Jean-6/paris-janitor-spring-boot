@@ -1,6 +1,7 @@
 package com.example.paris_janitor_api.controller;
 
 import com.example.paris_janitor_api.dto.SignupDto;
+import com.example.paris_janitor_api.dto.UserSearchDto;
 import com.example.paris_janitor_api.exception.BadRequestException;
 import com.example.paris_janitor_api.exception.ResourceNotFoundException;
 import com.example.paris_janitor_api.model.*;
@@ -23,6 +24,20 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @PostMapping(value = "/byCriteria",  consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<List<User>> getUsersByCriteria(@RequestBody UserSearchDto userSearchDto) {
+
+        if(userSearchDto==null){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        try{
+            List<User> users = userService.searchUserByCriteria(userSearchDto);
+            return ResponseEntity.status(HttpStatus.OK).body(users);
+        }catch(ResourceNotFoundException notFoundEx){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
 
     @GetMapping(value = "/providers/availability/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

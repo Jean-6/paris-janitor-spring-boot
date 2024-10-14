@@ -22,11 +22,11 @@ public class User {
     private String id;
     private Profile profile;
     private String password;
-    private String userId;
     @CreatedDate
     @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
-    private List<Roles> roles ; // Liste de rôles attribués à l'utilisateur (ex. "LESSOR","ADMIN","TRAVELER","PROVIDER")
+    private String roles;//List<Roles> roles ; // Liste de rôles attribués à l'utilisateur (ex. "LESSOR","ADMIN","TRAVELER","PROVIDER")
     private boolean active;
+    private List<AvailabilityDay> availabilityDays;
 
 }
