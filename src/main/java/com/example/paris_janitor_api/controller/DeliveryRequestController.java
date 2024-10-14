@@ -50,6 +50,29 @@ public class DeliveryRequestController {
         }
     }
 
+    @GetMapping(value="/byPropertyId/{propertyIds}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getDeliveriesRequestByPropertyId(@PathVariable List<String> propertyIds) {
+
+        if(propertyIds.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found");
+        try{
+            List<DeliveryRequest> deliveryRequestList = deliveryRequestService.getDeliveryRequestByPropertyIds(propertyIds);
+            return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestList);
+        }catch (BadRequestException badEx){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @GetMapping(value="/user",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DeliveryRequest>> getDeliveriesRequestBy(@RequestParam("userId") String userId) {
+        try{
+            List<DeliveryRequest> deliveryRequestList = deliveryRequestService.getDeliveryRequestBy(userId);
+            return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestList);
+        }catch (ResourceNotFoundException Ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+
     @GetMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Optional<DeliveryRequest>> getDeliveryRequestById(@PathVariable String id) {
         

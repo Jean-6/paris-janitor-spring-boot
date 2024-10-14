@@ -4,7 +4,10 @@ import com.example.paris_janitor_api.exception.ResourceNotFoundException;
 import com.example.paris_janitor_api.model.DeliveryRequest;
 import com.example.paris_janitor_api.model.RequestStatus;
 import com.example.paris_janitor_api.model.Stage;
+import com.example.paris_janitor_api.model.User;
 import com.example.paris_janitor_api.repository.DeliveryRequestRepository;
+import com.example.paris_janitor_api.repository.PropertyRepository;
+import com.example.paris_janitor_api.repository.UserRepository;
 import com.example.paris_janitor_api.service.DeliveryRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,7 +29,11 @@ import java.util.Optional;
 public class DeliveryRequestServiceImpl implements DeliveryRequestService {
 
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private DeliveryRequestRepository deliveryRequestRepository;
+    @Autowired
+    private PropertyRepository propertyRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -87,4 +95,40 @@ public class DeliveryRequestServiceImpl implements DeliveryRequestService {
         }
         return Optional.empty();
     }
+
+    @Override
+    public Optional<List<DeliveryRequest>> getDeliveryRequestByPropertyId(String propId) {
+        boolean isExist = this.propertyRepository.existsPropertyById(propId);
+        if(isExist){
+            Query query = new Query();
+            Criteria criteria = Criteria.where("propertyId").is(propId);
+            query.addCriteria(criteria);
+            return Optional.of(mongoTemplate.find(query, DeliveryRequest.class));
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<DeliveryRequest> getDeliveryRequestByPropertyIds(List<String> propIds) {
+        Query query = new Query();
+        Criteria criteria = Criteria.where("propertyId").in(propIds);
+        query.addCriteria(criteria);
+        return mongoTemplate.find(query,DeliveryRequest.class);
+    }
+
+    @Override
+    public List<DeliveryRequest> getDeliveryRequestBy(String userId) {
+
+        Optional<User> optionalUser = this.userRepository.findById(userId);
+        if(optionalUser.isPresent()) {
+            Query query = new Query();
+            Criteria criteria = Criteria.where("userId").is(optionalUser.get().getId());
+            query.addCriteria(criteria);
+            return mongoTemplate.find(query, DeliveryRequest.class);
+        }else {
+            throw new ResourceNotFoundException("user does not exist");
+        }
+    }
+
+
 }

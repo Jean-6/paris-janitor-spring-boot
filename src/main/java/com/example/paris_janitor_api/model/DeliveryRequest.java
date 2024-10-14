@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -28,7 +27,8 @@ public class DeliveryRequest implements InvoiceItem {
     private String description;
     private ArrayList<Stage> stage;
     @CreatedBy
-    private Profile userProfile;
+    private String userId;
+    private String providerId;
     @CreatedDate
     @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
