@@ -24,11 +24,13 @@ public class Booking {
     private String propertyId;
     @CreatedBy
     private String userId;
-    private int weekNumber;
+    private String weekNumber;
     private String dayOfWeek;
     private String hourOfDay;
+    private String year;
+    @JsonFormat(pattern="dd/MM/yyyy")
+    private  LocalDateTime[] fullDate ;
     @CreatedDate
     @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
-    private String color;
 }

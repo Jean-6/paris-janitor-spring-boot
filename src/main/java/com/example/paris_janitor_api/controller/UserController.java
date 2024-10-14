@@ -1,10 +1,9 @@
 package com.example.paris_janitor_api.controller;
 
+import com.example.paris_janitor_api.dto.SignupDto;
 import com.example.paris_janitor_api.exception.BadRequestException;
 import com.example.paris_janitor_api.exception.ResourceNotFoundException;
-import com.example.paris_janitor_api.model.DeliveryRequest;
-import com.example.paris_janitor_api.model.Property;
-import com.example.paris_janitor_api.model.User;
+import com.example.paris_janitor_api.model.*;
 import com.example.paris_janitor_api.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,60 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @GetMapping(value = "/providers/availability/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Optional<User>> getProvidersAvailability(@PathVariable String id) {
+
+        if(id.isEmpty() || id.equals("null")){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Optional.empty());
+        }
+        try{
+            Optional<User> optionalUser = userService.getUserById(id);
+            if(optionalUser.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Optional.empty());
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(id));
+        }catch(ResourceNotFoundException notFoundEx){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @PostMapping(value = "/providers/availability/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveProvidersAvailability(@RequestBody List<AvailabilityDay> availabilityDays,@PathVariable String id) {
+
+        if(availabilityDays.isEmpty() || id.isEmpty() || id.equals("null")){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Optional.empty());
+        }
+        try{
+            Optional<User> optionalUser = userService.getUserById(id);
+            if(optionalUser.isEmpty()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Optional.empty());
+            }
+            optionalUser.get().setAvailabilityDays(availabilityDays);
+            return ResponseEntity.status(HttpStatus.OK).body("Disponilitié(s) enregistrées");
+        }catch(ResourceNotFoundException notFoundEx){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> save(@RequestBody SignupDto signupDto  ) {
+
+        if(signupDto==null) return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Optional.empty());
+
+        try{
+            Optional<User> optionalUser = userService.getUserByEmail(signupDto.getProfile().getEmail());
+            if(optionalUser.isPresent()){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Cet email existe déjà");
+            }
+            User user = this.userService.saveUser(signupDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Compte utilisateur créé");
+        }catch (BadRequestException badEx){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+
     @GetMapping(value = "/page", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Optional<Page<User>>> getUsersPerPage(
             @RequestParam(defaultValue = "0") int page,
@@ -42,7 +95,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Optional<User>> getUSerById(@PathVariable String id) {
+    public ResponseEntity<Optional<User>> getUserById(@PathVariable String id) {
 
         if(id.isEmpty() || id.equals("null")){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Optional.empty());
