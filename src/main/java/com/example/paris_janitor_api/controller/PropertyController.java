@@ -4,6 +4,7 @@ import com.example.paris_janitor_api.exception.BadRequestException;
 import com.example.paris_janitor_api.exception.ResourceNotFoundException;
 import com.example.paris_janitor_api.model.Property;
 import com.example.paris_janitor_api.service.PropertyService;
+import com.mongodb.client.result.UpdateResult;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,29 @@ public class PropertyController {
 
     @Autowired
     private PropertyService propertyService;
+
+
+
+    @PostMapping(value = "/active/{propertyId}",  consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<String> modifyStatus(@PathVariable String propertyId) {
+
+        if(propertyId==null || propertyId.isEmpty()){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        try{
+            UpdateResult result = propertyService.updatePropertyStatus(propertyId);
+            if(result.getModifiedCount()>0){
+                return ResponseEntity.status(HttpStatus.OK).body("Status updated");
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Property not found");
+            }
+        }catch(ResourceNotFoundException notFoundEx){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+
+
 
     @GetMapping(value = "/page", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Optional<Page<Property>>> getPropertiesPerPage(
