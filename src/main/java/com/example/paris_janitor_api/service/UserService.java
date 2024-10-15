@@ -3,6 +3,7 @@ package com.example.paris_janitor_api.service;
 import com.example.paris_janitor_api.dto.SignupDto;
 import com.example.paris_janitor_api.dto.UserSearchDto;
 import com.example.paris_janitor_api.model.User;
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.data.domain.Page;
 
 
@@ -17,5 +18,6 @@ public interface UserService {
     Optional<User> getUserByEmail(String email);
     User saveUser(SignupDto signupDto);
     List<User> searchUserByCriteria(UserSearchDto userSearchDto);
+    UpdateResult updateUserStatus(String id );
 
 }

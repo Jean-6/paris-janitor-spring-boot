@@ -1,11 +1,11 @@
 package com.example.paris_janitor_api.service.impl;
 
-import com.amazonaws.util.StringUtils;
 import com.example.paris_janitor_api.dto.SignupDto;
 import com.example.paris_janitor_api.dto.UserSearchDto;
 import com.example.paris_janitor_api.model.User;
 import com.example.paris_janitor_api.repository.UserRepository;
 import com.example.paris_janitor_api.service.UserService;
+import com.mongodb.client.result.UpdateResult;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -95,8 +96,25 @@ public class UserServiceImpl implements UserService  {
         if( !userSearchDto.isStatus()){
             query.addCriteria(Criteria.where("active").is(false));
         }
-
         return mongoTemplate.find(query,User.class);
+    }
+
+    @Override
+    public UpdateResult updateUserStatus(String id) {
+
+        Optional<User> user= userRepository.findById(id);
+
+        Query query = new Query();
+        Update update = new Update();
+        if(user.isPresent()){
+            query.addCriteria(Criteria.where("id").is(user.get().getId()));
+            if(user.get().isActive()){
+                update.set("active",false);
+            }else{
+                update.set("active",true);
+            }
+        }
+        return mongoTemplate.updateFirst(query,update,User.class);
     }
 
 

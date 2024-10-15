@@ -6,6 +6,7 @@ import com.example.paris_janitor_api.exception.BadRequestException;
 import com.example.paris_janitor_api.exception.ResourceNotFoundException;
 import com.example.paris_janitor_api.model.*;
 import com.example.paris_janitor_api.service.UserService;
+import com.mongodb.client.result.UpdateResult;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,26 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+    @PostMapping(value = "/active/{userId}",  consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<String> modifyStatus(@PathVariable String userId) {
+
+        if(userId==null || userId.isEmpty()){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        try{
+            UpdateResult result = userService.updateUserStatus(userId);
+            if(result.getModifiedCount()>0){
+                return ResponseEntity.status(HttpStatus.OK).body("Status updated");
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+        }catch(ResourceNotFoundException notFoundEx){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
 
     @PostMapping(value = "/byCriteria",  consumes = MediaType.APPLICATION_JSON_VALUE )
     public ResponseEntity<List<User>> getUsersByCriteria(@RequestBody UserSearchDto userSearchDto) {
