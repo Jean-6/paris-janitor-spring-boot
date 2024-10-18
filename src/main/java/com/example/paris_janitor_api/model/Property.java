@@ -29,9 +29,9 @@ public class Property {
     private Address address;
     @CreatedBy
     private String userId;
-    private String tel;
+    //private String tel;
     @CreatedDate
     @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
-    private PropertyStatus status = PropertyStatus.PENDING;
+    private PropertyStatus state = PropertyStatus.PENDING;
 }
