@@ -19,7 +19,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 
 @Document(collection = "deliveryRequest")
-public class DeliveryRequest implements InvoiceItem {
+public class Request implements InvoiceItem {
     @Id
     private String id;
     private String propertyId;

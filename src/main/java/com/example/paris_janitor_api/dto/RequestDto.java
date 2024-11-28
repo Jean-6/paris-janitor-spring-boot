@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
-public class DeliveryRequestDto {
+public class RequestDto {
     @Id
     private String id;
     private String userId;
