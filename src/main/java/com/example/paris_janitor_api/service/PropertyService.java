@@ -1,4 +1,5 @@
 package com.example.paris_janitor_api.service;
+import com.example.paris_janitor_api.dto.PropertySearchDto;
 import com.example.paris_janitor_api.model.Property;
 import com.mongodb.client.result.UpdateResult;
 import org.springframework.data.domain.Page;
@@ -14,5 +15,6 @@ public interface PropertyService {
     List<Property> getProperties();
     Property deleteProperty(String propertyId);
     List<Property> getPropertyByUserId(String userId);
-    public UpdateResult updatePropertyStatus(String id);
+    UpdateResult updatePropertyStatus(String id);
+    List<Property> searchPropertyByCriteria(PropertySearchDto properSearchDto);
 }
