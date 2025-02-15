@@ -18,7 +18,7 @@ public class SwaggerConfig {
                 .description("API Document for Property management")
                         .contact(new Contact()
                                 .name("Jaures Support Dev")
-                                .email("oka.jeanjaures@gmail.Com")
+                                .email("oka.jeanjaures@gmail.com")
                                 .email("https://github.com/Jean-6/paris-janitor-spring-boot")
                         )
                 );
