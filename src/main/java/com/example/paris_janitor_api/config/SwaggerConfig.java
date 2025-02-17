@@ -14,8 +14,8 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI(){
         return new OpenAPI()
                 .info(new Info().description("API Documentation")
-                .version("1.0")
-                .description("API Document for Property management")
+                        .version("1.0.0")
+                        .description("Documentation d'API REST - Gestion de biens")
                         .contact(new Contact()
                                 .name("Jaures Support Dev")
                                 .email("oka.jeanjaures@gmail.com")
