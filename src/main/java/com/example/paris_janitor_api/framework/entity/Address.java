@@ -1,4 +1,4 @@
-package com.example.paris_janitor_api.model;
+package com.example.paris_janitor_api.framework.entity;
 
 
 import lombok.AllArgsConstructor;

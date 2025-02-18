@@ -1,18 +1,15 @@
-package com.example.paris_janitor_api.controller;
+package com.example.paris_janitor_api.adapter.in;
 
-import com.example.paris_janitor_api.exception.BadRequestException;
-import com.example.paris_janitor_api.exception.ResourceNotFoundException;
-import com.example.paris_janitor_api.model.Property;
-import com.example.paris_janitor_api.service.PropertyService;
-import com.mongodb.client.result.UpdateResult;
+//import com.example.paris_janitor_api.service.PropertyService;
+import com.example.paris_janitor_api.core.model.Property;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +18,30 @@ import java.util.Optional;
 @RequestMapping("/api/property")
 public class PropertyController {
 
-    @Autowired
+
+        @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<Optional<Page<Property>>> getPropertiesPerPage(){
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+   /* @Autowired
     private PropertyService propertyService;
+
+
+
+
+    @PostMapping(value = "/byCriteria",  consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<List<Property>> getPropertiesByCriteria(@RequestBody PropertySearchDto properSearchDto) {
+
+        if(properSearchDto==null){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        try{
+            List<Property> properties = propertyService.searchPropertyByCriteria(properSearchDto);
+            return ResponseEntity.status(HttpStatus.OK).body(properties);
+        }catch(ResourceNotFoundException notFoundEx){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
 
 
@@ -80,8 +99,8 @@ public class PropertyController {
         }
     }
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Property>> getPropByUserId(@RequestParam String userId) {
+    @GetMapping(value = "/byuser/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Property>> getPropByUserId(@PathVariable String userId) {
 
         if(userId.isEmpty() || userId.equals("null")){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -133,5 +152,5 @@ public class PropertyController {
         }catch (RuntimeException runtimeEx){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
+    }*/
 }

@@ -1,6 +1,6 @@
 package com.example.paris_janitor_api.dto;
 
-import com.example.paris_janitor_api.model.Address;
+import com.example.paris_janitor_api.framework.entity.Address;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

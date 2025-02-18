@@ -1,4 +1,4 @@
-package com.example.paris_janitor_api.config;
+package com.example.paris_janitor_api.framework.doc;
 
 
 import io.swagger.v3.oas.models.OpenAPI;

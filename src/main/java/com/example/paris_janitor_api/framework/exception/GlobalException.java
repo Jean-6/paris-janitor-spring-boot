@@ -14,30 +14,36 @@ import java.lang.Exception;
 public class GlobalException {
 
 
-
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> resourceNotFoundHandler(ResourceNotFoundException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(ex.toString());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND.value())
+                .body("resource not found");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> badRequestHandler(IllegalArgumentException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(ex.toString());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST.value())
+                .body("bad request");
     }
 
     @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<String> conflictExceptionHandler(ConflictException ex){
-        return ResponseEntity.status(HttpStatus.CONFLICT.value()).body(ex.toString());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT.value())
+                .body("conflict");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<String> runtimeExceptionException(RuntimeException ex){
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(ex.toString());
+    public ResponseEntity<String> runtimeExceptionException(Exception ex){
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .body("internal server error");
     }
-
 
 }

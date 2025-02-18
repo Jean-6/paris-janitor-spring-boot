@@ -1,6 +1,6 @@
 package com.example.paris_janitor_api.dto;
 
-import com.example.paris_janitor_api.model.RequestStatus;
+import com.example.paris_janitor_api.framework.entity.RequestStatus;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 

@@ -1,29 +1,16 @@
-package com.example.paris_janitor_api.controller;
+package com.example.paris_janitor_api.adapter.in;
 
-import com.example.paris_janitor_api.exception.BadRequestException;
-import com.example.paris_janitor_api.exception.ResourceNotFoundException;
-import com.example.paris_janitor_api.model.Request;
-import com.example.paris_janitor_api.model.RequestStatus;
-import com.example.paris_janitor_api.service.DeliveryRequestService;
-import com.mongodb.client.result.UpdateResult;
+//import com.example.paris_janitor_api.service.RequestService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @Log4j2
 @RestController
 @RequestMapping("/api/delivery-request")
 public class RequestController {
 
-    @Autowired
-    private DeliveryRequestService deliveryRequestService;
+   /* @Autowired
+    private RequestService requestService;
 
 
 
@@ -34,7 +21,7 @@ public class RequestController {
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         try{
-            UpdateResult result = deliveryRequestService.assignRequest(providerId,requestId);
+            UpdateResult result = requestService.assignRequest(providerId,requestId);
             if(result.getModifiedCount()>0){
                 return ResponseEntity.status(HttpStatus.OK).body("Provider affected");
             }else{
@@ -51,7 +38,7 @@ public class RequestController {
             @RequestParam(defaultValue = "10") int size) {
 
         try{
-            Page<Request> deliveryPage= deliveryRequestService.getDeliveriesRequestPerPage(page, size);
+            Page<Request> deliveryPage= requestService.getDeliveriesRequestPerPage(page, size);
             if(deliveryPage.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
             }
@@ -64,7 +51,7 @@ public class RequestController {
     @GetMapping(value="/",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Request>> getDeliveriesRequest() {
         try{
-            List<Request> requestList = deliveryRequestService.getDeliveriesRequest();
+            List<Request> requestList = requestService.getDeliveriesRequest();
             return ResponseEntity.status(HttpStatus.OK).body(requestList);
         }catch (BadRequestException badEx){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -76,7 +63,7 @@ public class RequestController {
 
         if(propertyIds.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found");
         try{
-            List<Request> requestList = deliveryRequestService.getDeliveryRequestByPropertyIds(propertyIds);
+            List<Request> requestList = requestService.getDeliveryRequestByPropertyIds(propertyIds);
             return ResponseEntity.status(HttpStatus.OK).body(requestList);
         }catch (BadRequestException badEx){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -86,7 +73,7 @@ public class RequestController {
     @GetMapping(value="/user",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Request>> getDeliveriesRequestBy(@RequestParam("userId") String userId) {
         try{
-            List<Request> requestList = deliveryRequestService.getDeliveryRequestBy(userId);
+            List<Request> requestList = requestService.getDeliveryRequestBy(userId);
             return ResponseEntity.status(HttpStatus.OK).body(requestList);
         }catch (ResourceNotFoundException Ex){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -101,11 +88,11 @@ public class RequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         try{
-            Optional<Request> deliveryRequest = deliveryRequestService.getDeliveryRequestById(id);
+            Optional<Request> deliveryRequest = requestService.getDeliveryRequestById(id);
             if(deliveryRequest.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
             }
-            return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestService.getDeliveryRequestById(id));
+            return ResponseEntity.status(HttpStatus.OK).body(requestService.getDeliveryRequestById(id));
         }catch (ResourceNotFoundException notFoundException){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -114,7 +101,7 @@ public class RequestController {
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Request> save(@RequestBody Request deliveryRequest) {
         try{
-            Request request = deliveryRequestService.saveDeliveryRequest(deliveryRequest);
+            Request request = requestService.saveDeliveryRequest(deliveryRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(request);
         }catch(BadRequestException badEx){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -124,7 +111,7 @@ public class RequestController {
     @DeleteMapping(value="/{deliveryRequestId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteDeliveryRequest(@PathVariable String deliveryRequestId) {
         try{
-            Optional<Request> optionalDeliveryRequest = deliveryRequestService.deleteDeliveryRequest(deliveryRequestId);
+            Optional<Request> optionalDeliveryRequest = requestService.deleteDeliveryRequest(deliveryRequestId);
             if(optionalDeliveryRequest.isPresent()) {
                 return ResponseEntity.status(HttpStatus.OK).body("Ressource id: " + deliveryRequestId+" supprimee");
             }
@@ -139,7 +126,7 @@ public class RequestController {
     @PatchMapping(value = "/update/{deliveryRequestId}/{status}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?>update(@PathVariable String deliveryRequestId, @PathVariable RequestStatus status) {
         try{
-            Optional<Request> deliveryRequestUpdated= deliveryRequestService.updateDeliveryRequestStage(deliveryRequestId,status);
+            Optional<Request> deliveryRequestUpdated= requestService.updateDeliveryRequestStage(deliveryRequestId,status);
             if(deliveryRequestUpdated.isPresent()) {
                 return ResponseEntity.status(HttpStatus.OK).body(deliveryRequestUpdated);
             }
@@ -147,5 +134,5 @@ public class RequestController {
         }catch(BadRequestException badEx){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Requête invalide");
         }
-    }
+    }*/
 }

@@ -1,21 +1,14 @@
-package com.example.paris_janitor_api.service.impl;
+package com.example.paris_janitor_api.core.service;
 
-import com.example.paris_janitor_api.exception.BadRequestException;
-import com.example.paris_janitor_api.exception.ResourceNotFoundException;
-import com.example.paris_janitor_api.model.Delivery;
-import com.example.paris_janitor_api.repository.DeliveryRepository;
-import com.example.paris_janitor_api.service.DeliveryService;
+//import com.example.paris_janitor_api.service.DeliveryService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+        import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class DeliveryServiceImpl implements DeliveryService {
+public class DeliveryService  {
 
-    @Autowired
+  /*  @Autowired
     private DeliveryRepository deliveryRepository;
 
 
@@ -42,5 +35,5 @@ public class DeliveryServiceImpl implements DeliveryService {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
         deliveryRepository.deleteById(delivery.getId());
-    }
+    }*/
 }

@@ -1,28 +1,21 @@
-package com.example.paris_janitor_api.controller;
+package com.example.paris_janitor_api.adapter.in;
 
-import com.example.paris_janitor_api.model.Delivery;
-import com.example.paris_janitor_api.service.DeliveryService;
+//import com.example.paris_janitor_api.service.DeliveryService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
+        import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RestController
 @RequestMapping("/api/delivery")
 public class DeliveryController {
 
-    @Autowired
+    /*@Autowired
     private DeliveryService deliveryService;
 
 
-    @GetMapping(value = "/{deliveryReqId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Optional<Delivery>>getDeliveryById(@PathVariable String deliveryReqId) {
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Optional<Delivery>>getDeliveryById(@RequestParam("id")  String deliveryReqId) {
         return ResponseEntity.status(HttpStatus.OK).body(deliveryService.getDeliveryById(deliveryReqId));
     }
 
@@ -46,6 +39,6 @@ public class DeliveryController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
         }
-    }
+    }*/
 
 }

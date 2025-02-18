@@ -1,23 +1,14 @@
-package com.example.paris_janitor_api.service.impl;
+package com.example.paris_janitor_api.core.service;
 
-import com.example.paris_janitor_api.model.Booking;
-import com.example.paris_janitor_api.repository.BookingRepository;
-import com.example.paris_janitor_api.service.BookingService;
+//import com.example.paris_janitor_api.service.BookingService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
+        import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class BookingServiceImpl  implements BookingService {
+public class BookingService {
 
-    @Autowired
+    /*@Autowired
     private MongoTemplate mongoTemplate;
 
     @Autowired
@@ -56,7 +47,7 @@ public class BookingServiceImpl  implements BookingService {
         Criteria criteria = new Criteria();
         criteria.andOperator(Criteria.where("userId").is(userId));
         query.addCriteria(criteria);
-        return mongoTemplate.find(query, Booking.class);*/
+        return mongoTemplate.find(query, Booking.class);
 
         // Créer un critère de recherche pour le userId
         Query query = new Query();
@@ -69,6 +60,6 @@ public class BookingServiceImpl  implements BookingService {
     @Override
     public Optional<Booking> getBookingById(String id) {
         return Optional.empty();
-    }
+    }*/
 
 }
