@@ -1,9 +1,10 @@
-package com.example.paris_janitor_api.framework.entity;
+package com.example.paris_janitor_api.framework.db;
+
+
+import com.example.paris_janitor_api.core.model.Address;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,16 +15,21 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "delivery")
-public class Delivery {
+@Document(collection = "property")
+public class PropertyDocument {
     @Id
     private String id;
     private String type ;
+    private double area;
+    private long pieces;
+    private double rent;
     private String description;
-    private double price;
+    private Address address;
+    @CreatedBy
+    private String userId;
+    private String tel;
     @CreatedDate
     @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
-
-
+    //private PropertyStatus state = PropertyStatus.PENDING;*/
 }

@@ -1,4 +1,4 @@
-package com.example.paris_janitor_api.framework.entity;
+package com.example.paris_janitor_api.framework.db;
 
 
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "address")
-public class Address {
+public class AddressDocument {
     private String street ;
     private String city;
     private long zip;
