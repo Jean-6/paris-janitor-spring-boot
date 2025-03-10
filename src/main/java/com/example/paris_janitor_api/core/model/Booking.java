@@ -1,8 +1,11 @@
 package com.example.paris_janitor_api.core.model;
 
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.LocalDateTime;
 
+@Document(collection = "booking")
 public class Booking {
     private String id;
     private String propertyId;

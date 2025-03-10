@@ -1,6 +1,8 @@
 package com.example.paris_janitor_api.core.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "address")
 public class Address {
     private String street ;
     private String city;
