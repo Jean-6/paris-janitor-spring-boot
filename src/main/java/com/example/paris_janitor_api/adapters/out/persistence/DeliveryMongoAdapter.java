@@ -1,22 +1,52 @@
-package com.example.paris_janitor_api.adapters.out.persistent;
+package com.example.paris_janitor_api.adapters.out.persistence;
 
 import com.example.paris_janitor_api.application.port.out.delivery.*;
-import com.example.paris_janitor_api.core.model.Delivery;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import com.example.paris_janitor_api.core.model.Delivery;;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Optional;
 
 @Component
-public interface DeliveryByIdMongoAdapter extends MongoRepository<Delivery,String>,
-        DeleteByIdDeliveryPort,
-        LoadDeliveryByIdPort,
-        LoadAllDeliveriesPort,
-        PersistDeliveryPort/*,
-        UpdateDeliveryPort*/ {
+public class DeliveryMongoAdapter implements DeleteByIdDeliveryPort, LoadDeliveryByIdPort, LoadAllDeliveriesPort, PersistDeliveryPort, UpdateDeliveryPort {
+    @Override
+    public void deleteDeliveryById(String id) {
+
+    }
 
     @Override
+    public Flux<Delivery> loadDeliveries() {
+        return null;
+    }
+
+    @Override
+    public Mono<Delivery> loadDeliveryById(String id) {
+        return null;
+    }
+
+    @Override
+    public Mono<Delivery> save(Delivery delivery) {
+        return null;
+    }
+
+    @Override
+    public Delivery updateDeliveryById(String id, Delivery delivery) {
+        return null;
+    }
+
+   /* @Override
+    void deleteDeliveryById(String id);
+
+    @Override
+    Mono<Delivery> loadDeliveryById(String id);
+
+    @Override
+    Flux<Delivery> loadDeliveries();
+
+    @Override
+    Mono<Delivery> save(Delivery delivery);
+
+    /*@Override
     default void deleteDeliveryById(String id){
 
     }
@@ -29,7 +59,7 @@ public interface DeliveryByIdMongoAdapter extends MongoRepository<Delivery,Strin
     @Override
     default List<Delivery> loadDeliveries(){
         return null;
-    }
+    }*/
 /*
     @Override
     default Delivery updateDeliveryById(String id, Delivery delivery){
