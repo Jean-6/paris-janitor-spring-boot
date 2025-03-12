@@ -1,4 +1,4 @@
-package com.example.paris_janitor_api.framework.exception;
+package com.example.paris_janitor_api.infrastructure.exception;
 
 
 import org.springframework.http.HttpStatus;
