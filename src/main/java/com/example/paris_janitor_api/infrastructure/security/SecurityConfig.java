@@ -1,4 +1,4 @@
-package com.example.paris_janitor_api.framework.security;
+package com.example.paris_janitor_api.infrastructure.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
