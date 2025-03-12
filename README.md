@@ -45,7 +45,7 @@ com.example.paris-janitor-api
 │   │   ├── out           # Ports de sortie (interactions avec la base, services externes)
 │   │   │   ├── LoadProductsPort.java
 │   │   │   ├── PersistProductPort.java
-│   ├── usecase           # Implémentation des Use Cases
+│   ├── usecase           # Implémentation des Use Cases (n'intéragit pas avec la BD mais passe tj=oujours par un Port OUT pour recuperer les donnees
 │   │   ├── CreateProductUseCase.java
 │   │   ├── GetAllProductsUseCase.java
 │
