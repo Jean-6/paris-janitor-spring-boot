@@ -1,9 +1,8 @@
 package com.example.paris_janitor_api.application.port.in.booking;
 
 import com.example.paris_janitor_api.core.model.Booking;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 public interface LoadBookingByIdPort {
-    Optional<Booking> getBookingById(String id);
+    Mono<Booking> getBookingById(String id);
 }

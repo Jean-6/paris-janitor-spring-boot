@@ -1,8 +1,9 @@
 package com.example.paris_janitor_api.application.port.in.request;
 
-import com.example.paris_janitor_api.core.model.Request;
-import reactor.core.publisher.Flux;
 
-public interface LoadAllRequestsPort {
-    Flux<Request> getAllRequests();
+import com.example.paris_janitor_api.core.model.Request;
+import reactor.core.publisher.Mono;
+
+public interface PersistRequestPort {
+    Mono<Request> save(Request request) ;
 }

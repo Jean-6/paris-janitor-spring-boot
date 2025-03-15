@@ -2,9 +2,8 @@ package com.example.paris_janitor_api.application.port.in.delivery;
 
 
 import com.example.paris_janitor_api.core.model.Delivery;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 public interface LoadAllDeliveriesPort {
-    List<Delivery> getAllDeliveries();
+    Flux<Delivery> getAllDeliveries();
 }
