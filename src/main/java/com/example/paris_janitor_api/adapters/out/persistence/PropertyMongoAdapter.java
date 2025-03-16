@@ -8,86 +8,47 @@ import reactor.core.publisher.Mono;
 
 
 @Component
-public class PropertyMongoAdapter implements LoadAllPropertiesPort, LoadByIdPropertyPort, DeleteByIdPropertyPort, UpdatePropertyPort, PersistPropertyPort {
-    @Override
-    public void deleteById(String id) {
+public class PropertyMongoAdapter implements LoadAllPropertiesPort,
+        LoadByIdPropertyPort,
+        DeleteByIdPropertyPort,
+        UpdatePropertyPort,
+        PersistPropertyPort {
 
+
+    private final PropertyReactiveMongoRepo propertyReactiveMongoRepo;
+
+    public PropertyMongoAdapter(PropertyReactiveMongoRepo propertyReactiveMongoRepo) {
+            this.propertyReactiveMongoRepo = propertyReactiveMongoRepo;
     }
 
     @Override
-    public Flux<Property> loadAllProperties() {
-        return null;
+    public Flux<Property> loadAll() {
+        return propertyReactiveMongoRepo.findAll();
     }
 
     @Override
-    public Mono<Property> loadPropertyBy(String id) {
-        return null;
-    }
-
-    @Override
-    public Mono<Property> updatePropertyById(String id, Property property) {
-        return null;
+    public Mono<Property> loadById(String id) {
+        return propertyReactiveMongoRepo.findById(id);
     }
 
     @Override
     public Mono<Property> save(Property property) {
-        return null;
-    }
-   /* @Override
-    Mono<Property> save(Property property);
-
-    @Override
-    Flux<Property> loadAllProperties();
-
-    @Override
-    Mono<Property> loadPropertyBy(String id);
-
-
-    @Override
-    Mono<Property> updatePropertyById(String id, Property property);
-
-    /*@Override
-    default Optional<Property> loadPropertyBy(String id){
-        return findById(id);
-    }
-    @Override
-    default Property persistProperty(Property property){
-        return save(property);
+        return propertyReactiveMongoRepo.save(property);
     }
 
     @Override
-    default Property updatePropertyById(String id, Property property){
-        property.setId(id);
-        return save(property);
+    public Mono<Property> update(String id, Property property) {
+        return propertyReactiveMongoRepo.findById(id)
+                .flatMap(existingProperty->{
+                    existingProperty.setDescription(property.getDescription());
+
+                    return propertyReactiveMongoRepo.save(existingProperty);
+                });
     }
 
     @Override
-    default List<Property> loadAllProperties(){
-        return findAll();
-    }*/
-
-
-
-/*
-
-    @Override
-    public Property save(Property property) {
-        PropertyDocument propertyDocument = new PropertyDocument(property.getId(), property.getType(), property.getArea(), property.getPieces(), property.getRent(), property.getDescription(), new Address(property.getAddress().getStreet(),property.getAddress().getCity(),property.getAddress().getZip()), property.getUserId(), property.getTel(), property.getCreatedAt());
-        propertyDocument = springDataMongoPropertyRepository.save(propertyDocument);
-        return new Property(propertyDocument.getId(), propertyDocument.getType(), propertyDocument.getArea(), propertyDocument.getPieces(), propertyDocument.getRent(), propertyDocument.getDescription(), propertyDocument.getAddress(), propertyDocument.getUserId(), propertyDocument.getTel(), propertyDocument.getCreatedAt());
+    public Mono<Void> deleteById(String id) {
+        return propertyReactiveMongoRepo.deleteById(id);
     }
-    @Override
-    public List<Property> findAll() {
-        return springDataMongoPropertyRepository.findAll().stream()
-                .map(propertyDocument -> new Property(propertyDocument.getId(), propertyDocument.getType(), propertyDocument.getArea(), propertyDocument.getPieces(), propertyDocument.getRent(), propertyDocument.getDescription(), propertyDocument.getAddress(), propertyDocument.getUserId(), propertyDocument.getTel(), propertyDocument.getCreatedAt())).collect(Collectors.toList());
 
-    }
-    @Override
-    public Property findById(String id) {
-        PropertyDocument propertyDocument = springDataMongoPropertyRepository.findById(id).orElse(null);
-        if(propertyDocument==null) return null;
-        return new Property(propertyDocument.getId(), propertyDocument.getType(), propertyDocument.getArea(),propertyDocument.getPieces(), propertyDocument.getRent(), propertyDocument.getDescription(), propertyDocument.getAddress(), propertyDocument.getUserId(), propertyDocument.getTel(), propertyDocument.getCreatedAt()
-        );
-    }
-     */
 }
