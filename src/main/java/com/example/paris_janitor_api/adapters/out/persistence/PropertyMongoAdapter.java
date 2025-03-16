@@ -39,7 +39,7 @@ public class PropertyMongoAdapter implements LoadAllPropertiesPort,
     @Override
     public Mono<Property> update(String id, Property property) {
         return propertyReactiveMongoRepo.findById(id)
-                .flatMap(existingProperty->{
+                .flatMap(existingProperty -> {
                     existingProperty.setDescription(property.getDescription());
 
                     return propertyReactiveMongoRepo.save(existingProperty);

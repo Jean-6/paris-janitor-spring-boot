@@ -15,70 +15,39 @@ public class BookingMongoAdapter implements PersistBookingPort,
         LoadBookingByIdPort,
         UpdateBookingPort
 {
-    @Override
-    public Mono<Booking> persistBooking(Booking booking) {
-        return null;
+
+    private final BookingReactiveMongoRepo bookingReactiveMongoRepo;
+
+    public BookingMongoAdapter(BookingReactiveMongoRepo bookingReactiveMongoRepo) {
+        this.bookingReactiveMongoRepo = bookingReactiveMongoRepo;
     }
 
     @Override
-    public Mono<Void> deleteBookingById(String id) {
-        return null;
+    public Mono<Void> deleteById(String id) {
+        return bookingReactiveMongoRepo.deleteById(id);
     }
 
     @Override
     public Flux<Booking> loadBookings() {
-        return null;
+        return bookingReactiveMongoRepo.findAll();
     }
 
     @Override
     public Mono<Booking> getBookingById(String id) {
-        return null;
+        return bookingReactiveMongoRepo.findById(id);
     }
 
     @Override
-    public Booking updateBookingById(String id, Booking booking) {
-        return null;
-    }
-
-
-
-    /*@Override
-    default Flux<Booking> loadBookings(){
-        return findAll();
+    public Mono<Booking> updateBookingById(String id, Booking booking) {
+        return bookingReactiveMongoRepo.findById(id)
+                .flatMap(existingBooking -> {
+                    existingBooking.setUserId(booking.getUserId());
+                    return bookingReactiveMongoRepo.save(existingBooking);
+                });
     }
 
     @Override
-    default Mono<Booking> persistBooking(Booking booking){
-        return Mono.just(booking);
+    public Mono<Booking> save(Booking booking) {
+        return bookingReactiveMongoRepo.save(booking);
     }
-
-    default Mono<Booking> loadBookingByIdPort(String idPort){
-        return findById(idPort);
-    }
-
-    @Override
-    Mono<Void> deleteBookingById(String id);*/
-
-/*
-@Override
-    public Booking save(Booking booking) {
-        BookingDocument bookingDocument = new BookingDocument(booking.getId(), booking.getPropertyId(), booking.getUserId(), booking.getCreatedAt());
-        bookingDocument = springDataMongoBookingRepository.save(bookingDocument);
-        return new Booking(bookingDocument.getId(), bookingDocument.getPropertyId(), bookingDocument.getUserId(), bookingDocument.getCreatedAt());
-    }
-
-    @Override
-    public List<Booking> findAll() {
-        return springDataMongoBookingRepository.findAll().stream()
-                .map(bookingDocument -> new Booking(bookingDocument.getId(), bookingDocument.getPropertyId(), bookingDocument.getUserId(), bookingDocument.getCreatedAt()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Booking findById(String id) {
-        BookingDocument bookingDocument = springDataMongoBookingRepository.findById(id).orElse(null);
-        if(bookingDocument == null) return null;
-        return new Booking(bookingDocument.getId(), bookingDocument.getPropertyId(), bookingDocument.getUserId(), bookingDocument.getCreatedAt());
-    }
- */
 }

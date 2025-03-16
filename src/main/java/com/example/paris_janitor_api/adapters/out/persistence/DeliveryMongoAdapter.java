@@ -8,86 +8,46 @@ import reactor.core.publisher.Mono;
 
 
 @Component
-public class DeliveryMongoAdapter implements DeleteByIdDeliveryPort, LoadDeliveryByIdPort, LoadAllDeliveriesPort, PersistDeliveryPort, UpdateDeliveryPort {
-    @Override
-    public void deleteDeliveryById(String id) {
+public class DeliveryMongoAdapter implements DeleteByIdDeliveryPort,
+        LoadDeliveryByIdPort,
+        LoadAllDeliveriesPort,
+        PersistDeliveryPort,
+        UpdateDeliveryPort {
 
+    private final DeliveryReactiveMongoRepo deliveryReactiveMongoRepo;
+
+    public DeliveryMongoAdapter(DeliveryReactiveMongoRepo deliveryReactiveMongoRepo) {
+        this.deliveryReactiveMongoRepo = deliveryReactiveMongoRepo;
     }
 
     @Override
-    public Flux<Delivery> loadDeliveries() {
-        return null;
+    public Mono<Void> deleteById(String id) {
+        return deliveryReactiveMongoRepo.deleteById(id);
     }
 
     @Override
-    public Mono<Delivery> loadDeliveryById(String id) {
-        return null;
+    public Flux<Delivery> findAll() {
+        return deliveryReactiveMongoRepo.findAll();
+    }
+
+    @Override
+    public Mono<Delivery> findById(String id) {
+        return deliveryReactiveMongoRepo.findById(id);
     }
 
     @Override
     public Mono<Delivery> save(Delivery delivery) {
-        return null;
+        return deliveryReactiveMongoRepo.save(delivery);
     }
 
     @Override
-    public Delivery updateDeliveryById(String id, Delivery delivery) {
-        return null;
+    public Mono<Delivery> update(String id, Delivery delivery) {
+        return deliveryReactiveMongoRepo.findById(id)
+                .flatMap(existingDelivery -> {
+
+                    existingDelivery.setDescription(delivery.getDescription());
+
+                    return deliveryReactiveMongoRepo.save(existingDelivery);
+                });
     }
-
-   /* @Override
-    void deleteDeliveryById(String id);
-
-    @Override
-    Mono<Delivery> loadDeliveryById(String id);
-
-    @Override
-    Flux<Delivery> loadDeliveries();
-
-    @Override
-    Mono<Delivery> save(Delivery delivery);
-
-    /*@Override
-    default void deleteDeliveryById(String id){
-
-    }
-
-    @Override
-    default Optional<Delivery> loadDeliveryById(String id){
-        return null;
-    }
-
-    @Override
-    default List<Delivery> loadDeliveries(){
-        return null;
-    }*/
-/*
-    @Override
-    default Delivery updateDeliveryById(String id, Delivery delivery){
-        return null;
-    }*/
-    /*
-     @Override
-    public Delivery save(Delivery delivery) {
-
-        DeliveryDocument deliveryDocument = new DeliveryDocument(delivery.getId(), delivery.getType(), delivery.getDescription(), delivery.getPrice(), delivery.getCreatedAt());
-        deliveryDocument = springDataMongoDeliveryRepository.save(deliveryDocument);
-
-        return new Delivery(deliveryDocument.getId(), deliveryDocument.getType(), deliveryDocument.getDescription(), deliveryDocument.getPrice(), deliveryDocument.getCreatedAt());
-    }
-
-    @Override
-    public List<Delivery> findAll() {
-        return springDataMongoDeliveryRepository.findAll().stream()
-                .map(deliveryDocument -> new Delivery(deliveryDocument.getId(), deliveryDocument.getType(), deliveryDocument.getDescription(), deliveryDocument.getPrice(), deliveryDocument.getCreatedAt()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Delivery findById(String id) {
-        DeliveryDocument deliveryDocument = springDataMongoDeliveryRepository.findById(id).orElse(null);
-        if(deliveryDocument == null) return null;
-        return new Delivery(deliveryDocument.getId(), deliveryDocument.getType(), deliveryDocument.getDescription(), deliveryDocument.getPrice(), deliveryDocument.getCreatedAt()
-        );
-    }
-     */
 }
