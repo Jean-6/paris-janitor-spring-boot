@@ -1,6 +1,7 @@
 package com.example.paris_janitor_api.infrastructure.exception;
 
 
+import com.example.paris_janitor_api.adapters.in.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,34 +17,34 @@ public class GlobalException {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> resourceNotFoundHandler(ResourceNotFoundException ex){
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex){
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND.value())
-                .body("resource not found");
+                .body(new ErrorResponse("","NOT_FOUND",""));//"Resource Not Found"
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> badRequestHandler(IllegalArgumentException ex){
+    public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException ex){
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST.value())
-                .body("bad request");
+                .body(new ErrorResponse("","BAD_REQUEST",""));//"Bad Request"
     }
 
     @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<String> conflictExceptionHandler(ConflictException ex){
+    public ResponseEntity<ErrorResponse> handleConflictException(ConflictException ex){
         return ResponseEntity
                 .status(HttpStatus.CONFLICT.value())
-                .body("conflict");
+                .body(new ErrorResponse("","CONFLICT",""));//"Conflict"
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(GenericException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<String> runtimeExceptionException(Exception ex){
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex){
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .body("internal server error");
+                .body(new ErrorResponse("","INTERNAL_SERVER_ERROR",""));//"Internal Server Error"
     }
 
 }
