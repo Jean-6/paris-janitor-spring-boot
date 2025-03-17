@@ -28,12 +28,12 @@ public class BookingMongoAdapter implements PersistBookingPort,
     }
 
     @Override
-    public Flux<Booking> loadBookings() {
+    public Flux<Booking> findAll() {
         return bookingReactiveMongoRepo.findAll();
     }
 
     @Override
-    public Mono<Booking> getBookingById(String id) {
+    public Mono<Booking> findById(String id) {
         return bookingReactiveMongoRepo.findById(id);
     }
 

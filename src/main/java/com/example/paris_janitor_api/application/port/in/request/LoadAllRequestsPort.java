@@ -4,5 +4,5 @@ import com.example.paris_janitor_api.core.model.Request;
 import reactor.core.publisher.Flux;
 
 public interface LoadAllRequestsPort {
-    Flux<Request> getAllRequests();
+    Flux<Request> findAll();
 }
