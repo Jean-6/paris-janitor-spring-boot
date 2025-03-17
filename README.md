@@ -30,8 +30,9 @@ Ce microservice est une composante autonome conçue selon la clean architecture,
 - Java 17
 - Maven 3.9.9
 - Spring Boot 3.3.5
-- Base de données relationnelles: MySQL Workbench 8.0
-- Spring Security (Basic Auth & JWT)
+- Base de données relationnelles: Mongo Atlas
+- Spring Security (Basic Auth)
+- Spring Webflux
 
 ## Architecture 
 
@@ -45,7 +46,7 @@ com.example.paris-janitor-api
 │   │   ├── out           # Ports de sortie (interactions avec la base, services externes)
 │   │   │   ├── LoadProductsPort.java
 │   │   │   ├── PersistProductPort.java
-│   ├── usecase           # Implémentation des Use Cases (n'intéragit pas avec la BD mais passe tj=oujours par un Port OUT pour recuperer les donnees
+│   ├── usecase           # Implémentation des Use Cases (n'intéragit pas avec la BD mais passe toujours par un Port OUT pour recuperer les donnees
 │   │   ├── CreateProductUseCase.java
 │   │   ├── GetAllProductsUseCase.java
 │
@@ -94,9 +95,33 @@ com.example.paris-janitor-api
 
 ## Points de terminaison
 
-- POST /users : Créer un nouvel utilisateur.
-- GET /users/{id} : Récupérer les détails d'un utilisateur.
-- PUT /users/{id} : Mettre à jour les informations d'un utilisateur.
-- DELETE /users/{id} : Supprimer un utilisateur.
-- POST /login : Authentifier un utilisateur.
+### Booking
 
+- POST /booking : Créer une nouvelle réservation.
+- GET /booking/{id} : Récupérer les détails d'une réservation.
+- PUT /booking/{id} : Mettre à jour les informations de réservation.
+- DELETE /booking/{id} : Supprimer une réservation.
+
+
+### Delivery
+
+- POST /delivery : Créer une nouvelle prestation.
+- GET /delivery/{id} : Récupérer les détails d'une prestation.
+- PUT /delivery/{id} : Mettre à jour une prestation.
+- DELETE /delivery/{id} : Supprimer une prestation.
+
+
+### Property
+
+- POST /property : Créer une nouvelle propriété.
+- GET /property/{id} : Récupérer les détails d'une propriété.
+- PUT /property/{id} : Mettre à jour une propriété.
+- DELETE /property/{id} : Supprimer une propriété.
+
+
+### Request
+
+- POST /request : Créer une nouvelle demande.
+- GET /request/{id} : Récupérer les détails d'une demande.
+- PUT /request/{id} : Mettre à jour les informations d'une demande.
+- DELETE /request/{id} : Supprimer une demande.
