@@ -2,12 +2,13 @@ package com.example.paris_janitor_api.core.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+@Data
 @Document(collection = "request")
 public class Request {
     @Id
@@ -31,37 +32,4 @@ public class Request {
         this.providerId = providerId;
         this.createdAt = createdAt;
     }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getPropertyId() {
-        return propertyId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<Stage> getStages() {
-        return stages;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getProviderId() {
-        return providerId;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
 }
