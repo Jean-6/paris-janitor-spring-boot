@@ -14,8 +14,9 @@ public class LoadAllRequestsUseCase implements LoadAllRequestsPort {
         this.loadAllRequestsPort = loadAllRequestsPort;
     }
 
+
     @Override
-    public Flux<Request> findAll() {
+    public Flux<Request> getAllRequest() {
         return loadAllRequestsPort.findAll();
     }
 }
