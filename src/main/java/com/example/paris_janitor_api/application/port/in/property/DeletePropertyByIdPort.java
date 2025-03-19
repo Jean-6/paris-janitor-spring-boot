@@ -1,5 +1,7 @@
 package com.example.paris_janitor_api.application.port.in.property;
 
+import reactor.core.publisher.Mono;
+
 public interface DeletePropertyByIdPort {
-    void deleteById(String id);
+    Mono<Void> deleteById(String id);
 }

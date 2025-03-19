@@ -5,5 +5,5 @@ import reactor.core.publisher.Flux;
 
 
 public interface LoadAllBookingsPort {
-    Flux<Booking> findAll();
+    Flux<Booking> getAllBookings();
 }

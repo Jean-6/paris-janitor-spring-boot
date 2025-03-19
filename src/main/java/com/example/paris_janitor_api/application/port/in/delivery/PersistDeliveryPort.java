@@ -4,5 +4,5 @@ import com.example.paris_janitor_api.core.model.Delivery;
 import reactor.core.publisher.Mono;
 
 public interface PersistDeliveryPort {
-    Mono<Delivery> save(Delivery delivery) ;
+    Mono<Delivery> saveDelivery(Delivery delivery) ;
 }
