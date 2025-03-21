@@ -19,13 +19,6 @@ public class Booking {
     private String type;
     private String description;
     private String propertyId;
-    private String ownerId;
+    private String userId;
     private LocalDateTime createdAt;
-    private LocalDateTime dateOfSale;
-    private double area;
-    private Address address;
-    private Owner owner;
-    private double numberPieces;
-    private double price;
-
 }
