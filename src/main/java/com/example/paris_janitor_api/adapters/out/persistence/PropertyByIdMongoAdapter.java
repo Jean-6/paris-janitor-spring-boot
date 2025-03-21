@@ -8,16 +8,16 @@ import reactor.core.publisher.Mono;
 
 
 @Component
-public class PropertyMongoAdapter implements LoadAllPropertiesPort,
+public class PropertyByIdMongoAdapter implements LoadPropertiesPort,
         LoadByIdPropertyPort,
-        DeleteByIdPropertyPort,
+        DeletePropertyByIdPort,
         UpdatePropertyPort,
         PersistPropertyPort {
 
 
     private final PropertyReactiveMongoRepo propertyReactiveMongoRepo;
 
-    public PropertyMongoAdapter(PropertyReactiveMongoRepo propertyReactiveMongoRepo) {
+    public PropertyByIdMongoAdapter(PropertyReactiveMongoRepo propertyReactiveMongoRepo) {
             this.propertyReactiveMongoRepo = propertyReactiveMongoRepo;
     }
 
@@ -32,12 +32,19 @@ public class PropertyMongoAdapter implements LoadAllPropertiesPort,
     }
 
     @Override
-    public Mono<Property> save(Property property) {
+    public Mono<Property> deleteById(String id) {
+        return propertyReactiveMongoRepo.findById(id)
+                .flatMap(existingProperty -> propertyReactiveMongoRepo.delete(existingProperty)
+                        .then(Mono.just(existingProperty)));
+    }
+
+    @Override
+    public Mono<Property> saveBooking(Property property) {
         return propertyReactiveMongoRepo.save(property);
     }
 
     @Override
-    public Mono<Property> update(String id, Property property) {
+    public Mono<Property> findByIdAndUpdate(String id, Property property) {
         return propertyReactiveMongoRepo.findById(id)
                 .flatMap(existingProperty -> {
                     existingProperty.setDescription(property.getDescription());
@@ -45,10 +52,4 @@ public class PropertyMongoAdapter implements LoadAllPropertiesPort,
                     return propertyReactiveMongoRepo.save(existingProperty);
                 });
     }
-
-    @Override
-    public Mono<Void> deleteById(String id) {
-        return propertyReactiveMongoRepo.deleteById(id);
-    }
-
 }
