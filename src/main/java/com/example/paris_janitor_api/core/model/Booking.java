@@ -1,19 +1,31 @@
 package com.example.paris_janitor_api.core.model;
 
-import lombok.Data;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
+@Getter
+@Setter
 @Document(collection = "booking")
 public class Booking {
+    @Id
     private String id;
+    private String type;
+    private String description;
     private String propertyId;
-    private String userId;
-    //private LocalDateTime createdAt;
-    /*private String weekNumber;
-    private String dayOfWeek;
-    private String hourOfDay;
-    private String year;
-    private  String[] fullDate ;*/
+    private String ownerId;
+    private LocalDateTime createdAt;
+    private LocalDateTime dateOfSale;
+    private double area;
+    private Address address;
+    private Owner owner;
+    private double numberPieces;
+    private double price;
 
 }
