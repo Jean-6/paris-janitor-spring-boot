@@ -9,9 +9,10 @@ import reactor.core.publisher.Mono;
 
 
 @Component
-public class BookingMongoAdapter implements PersistBookingPort,
+public class BookingMongoAdapter implements
+        PersistBookingPort,
         DeleteBookingByIdPort,
-        LoadAllBookingsPort,
+        LoadBookingsPort,
         LoadBookingByIdPort,
         UpdateBookingPort
 {
@@ -23,8 +24,10 @@ public class BookingMongoAdapter implements PersistBookingPort,
     }
 
     @Override
-    public Mono<Void> deleteById(String id) {
-        return bookingReactiveMongoRepo.deleteById(id);
+    public Mono<Booking> deleteById(String id) {
+        return bookingReactiveMongoRepo.findById(id)
+                .flatMap(existingBooking -> bookingReactiveMongoRepo.delete(existingBooking)
+                .then(Mono.just(existingBooking)));
     }
 
     @Override
@@ -38,16 +41,16 @@ public class BookingMongoAdapter implements PersistBookingPort,
     }
 
     @Override
-    public Mono<Booking> updateBookingById(String id, Booking booking) {
+    public Mono<Booking> saveBooking(Booking booking) {
+        return bookingReactiveMongoRepo.save(booking);
+    }
+
+    @Override
+    public Mono<Booking> findByIdAndUpdate(String id, Booking booking) {
         return bookingReactiveMongoRepo.findById(id)
                 .flatMap(existingBooking -> {
                     existingBooking.setUserId(booking.getUserId());
                     return bookingReactiveMongoRepo.save(existingBooking);
                 });
-    }
-
-    @Override
-    public Mono<Booking> save(Booking booking) {
-        return bookingReactiveMongoRepo.save(booking);
     }
 }

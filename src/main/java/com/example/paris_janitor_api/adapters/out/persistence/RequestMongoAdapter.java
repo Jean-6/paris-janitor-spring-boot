@@ -8,8 +8,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
-public class RequestMongoAdapter implements DeleteByIdRequestPort,
-        LoadAllRequestsPort,
+public class RequestMongoAdapter implements
+        DeleteByIdRequestPort,
+        LoadRequestsPort,
         LoadRequestByIdPort,
         PersistRequestPort,
         UpdateRequestPort {
@@ -21,8 +22,10 @@ public class RequestMongoAdapter implements DeleteByIdRequestPort,
     }
 
     @Override
-    public Mono<Void> deleteById(String id) {
-        return requestReactiveMongoRepo.deleteById(id);
+    public Mono<Request> deleteById(String id) {
+        return requestReactiveMongoRepo.findById(id)
+                .flatMap(existingRequest -> requestReactiveMongoRepo.delete(existingRequest)
+                        .then(Mono.just(existingRequest)));
     }
 
     @Override
@@ -36,12 +39,12 @@ public class RequestMongoAdapter implements DeleteByIdRequestPort,
     }
 
     @Override
-    public Mono<Request> save(Request request) {
+    public Mono<Request> saveRequest(Request request) {
         return requestReactiveMongoRepo.save(request);
     }
 
     @Override
-    public Mono<Request> update(String id, Request request) {
+    public Mono<Request> findByIdAndUpdate(String id, Request request) {
         return requestReactiveMongoRepo.findById(id)
                 .flatMap(existingRequest -> {
                     existingRequest.setType(request.getType());
@@ -49,5 +52,4 @@ public class RequestMongoAdapter implements DeleteByIdRequestPort,
                     return requestReactiveMongoRepo.save(existingRequest);
                 });
     }
-
 }
