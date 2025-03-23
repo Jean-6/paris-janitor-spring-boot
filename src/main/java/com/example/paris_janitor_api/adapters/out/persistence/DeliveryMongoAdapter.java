@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 
 @Component
-public class DeliveryByIdMongoAdapter implements DeleteDeliveryByIdPort,
+public class DeliveryMongoAdapter implements DeleteDeliveryByIdPort,
         LoadDeliveryByIdPort,
         LoadDeliveriesPort,
         PersistDeliveryPort,
@@ -16,7 +16,7 @@ public class DeliveryByIdMongoAdapter implements DeleteDeliveryByIdPort,
 
     private final DeliveryReactiveMongoRepo deliveryReactiveMongoRepo;
 
-    public DeliveryByIdMongoAdapter(DeliveryReactiveMongoRepo deliveryReactiveMongoRepo) {
+    public DeliveryMongoAdapter(DeliveryReactiveMongoRepo deliveryReactiveMongoRepo) {
         this.deliveryReactiveMongoRepo = deliveryReactiveMongoRepo;
     }
 

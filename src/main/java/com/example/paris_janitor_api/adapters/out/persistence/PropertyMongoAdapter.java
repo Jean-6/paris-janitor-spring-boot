@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 
 @Component
-public class PropertyByIdMongoAdapter implements LoadPropertiesPort,
+public class PropertyMongoAdapter implements LoadPropertiesPort,
         LoadByIdPropertyPort,
         DeletePropertyByIdPort,
         UpdatePropertyPort,
@@ -17,7 +17,7 @@ public class PropertyByIdMongoAdapter implements LoadPropertiesPort,
 
     private final PropertyReactiveMongoRepo propertyReactiveMongoRepo;
 
-    public PropertyByIdMongoAdapter(PropertyReactiveMongoRepo propertyReactiveMongoRepo) {
+    public PropertyMongoAdapter(PropertyReactiveMongoRepo propertyReactiveMongoRepo) {
             this.propertyReactiveMongoRepo = propertyReactiveMongoRepo;
     }
 
