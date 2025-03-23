@@ -63,15 +63,15 @@ public class RequestController {
     }
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<ResponseEntity<Request>> getRequests() {
+    public ResponseEntity<Flux<Request>> getRequests() {
 
-        return loadRequestsPort.findAll()
-                .map(requests->{
-                    logger.info(requests.toString());
-                    return ResponseEntity.status(HttpStatus.OK)
-                            .body(requests);
-                })
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        Flux<Request> requests = loadRequestsPort.findAll()
+                .doOnNext(request -> {logger.info(request.toString());})
+                .onErrorResume(err->{
+                    logger.error(err.getMessage());
+                    return Flux.empty();
+                });
+        return ResponseEntity.status(HttpStatus.OK).body(requests);
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
