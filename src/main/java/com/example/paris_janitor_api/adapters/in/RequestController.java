@@ -45,21 +45,28 @@ public class RequestController {
                   return ResponseEntity.status(HttpStatus.CREATED)
                           .body(requestSaved);
               })
-              .defaultIfEmpty(ResponseEntity.badRequest().build());
+              .defaultIfEmpty(ResponseEntity.badRequest().build())
+              .onErrorResume(err->{
+                  logger.error(err.toString());
+                  return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+              });
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Request>> getRequestById(@PathVariable("id") String id) {
 
-        if(id.isBlank()) return Mono.just(ResponseEntity.badRequest().build());
-
+        //if(id.isBlank()) return Mono.just(ResponseEntity.badRequest().build());
         return loadRequestByIdPort.findById(id)
                 .map(request -> {
                     logger.info(request.toString());
                     return ResponseEntity.status(HttpStatus.OK)
                             .body(request);
                 })
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .defaultIfEmpty(ResponseEntity.notFound().build())
+                .onErrorResume(err->{
+                    logger.error(err.toString());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,7 +76,7 @@ public class RequestController {
                 .doOnNext(request -> {logger.info(request.toString());})
                 .onErrorResume(err->{
                     logger.error(err.getMessage());
-                    return Flux.empty();
+                    return Flux.error(err);
                 });
         return ResponseEntity.status(HttpStatus.OK).body(requests);
     }
@@ -83,16 +90,28 @@ public class RequestController {
                     return ResponseEntity.status(HttpStatus.OK)
                             .body(request1);
                 })
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .defaultIfEmpty(ResponseEntity.notFound().build())
+                .onErrorResume(err->{
+                    logger.error(err.toString());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Void>> deleteRequest(@RequestParam("id") String id) {
+    public Mono<ResponseEntity<Request>> deleteRequest(@RequestParam("id") String id) {
 
         return deleteByIdRequestPort.deleteById(id)
-                .map(existingRequest -> ResponseEntity.status(HttpStatus.OK).<Void>build())
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .map(request -> {
+                    logger.debug(request.toString());
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body(request);
+                })
+                .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).build())
+                .onErrorResume(err->{
+                    logger.error(err.toString());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
 
     }
 
