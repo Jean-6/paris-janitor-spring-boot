@@ -61,14 +61,16 @@ public class PropertyController {
 
 
     @GetMapping(value="/",produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<ResponseEntity<Property>> getProperties() {
-
-        return loadAllPropertiesPort.getAllProperties()
-                .map(properties -> {
-                    logger.info(properties.toString());
-                    return ResponseEntity.status(HttpStatus.OK).body(properties);
-                }).defaultIfEmpty(ResponseEntity.noContent().build());
+    public ResponseEntity<Flux<Property>> getProperties1() {
+        Flux<Property> properties = loadAllPropertiesPort.getAllProperties()
+                .doOnNext(property -> {logger.info(property.toString());})
+                .onErrorResume(error -> {
+                    logger.error(error.getMessage());
+                    return Flux.empty();
+                });
+        return ResponseEntity.ok().body(properties);
     }
+
 
     @PutMapping(value="/{id}",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Property>> update(@PathVariable("id") String id, @RequestBody Property property) {
