@@ -44,7 +44,11 @@ public class PropertyController {
                     logger.info(property.toString());
                     return ResponseEntity.status(HttpStatus.CREATED).body(property);
                 })
-                .defaultIfEmpty(ResponseEntity.badRequest().build());
+                .defaultIfEmpty(ResponseEntity.badRequest().build())
+                .onErrorResume(err->{
+                    logger.error(err.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
 
     }
 
@@ -56,12 +60,16 @@ public class PropertyController {
                     logger.info(property.toString());
                     return ResponseEntity.status(HttpStatus.OK).body(property);
                 })
-                .defaultIfEmpty(ResponseEntity.badRequest().build());
+                .defaultIfEmpty(ResponseEntity.badRequest().build())
+                .onErrorResume(err->{
+                    logger.error(err.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 
 
     @GetMapping(value="/",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Flux<Property>> getProperties1() {
+    public ResponseEntity<Flux<Property>> getProperties() {
         Flux<Property> properties = loadAllPropertiesPort.getAllProperties()
                 .doOnNext(property -> {logger.info(property.toString());})
                 .onErrorResume(error -> {
@@ -79,7 +87,11 @@ public class PropertyController {
                 .map(property1 -> {
                     logger.info(property1.toString());
                     return ResponseEntity.status(HttpStatus.OK).body(property1);
-                }).defaultIfEmpty(ResponseEntity.badRequest().build());
+                }).defaultIfEmpty(ResponseEntity.badRequest().build())
+                .onErrorResume(err->{
+                    logger.error(err.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 
     @DeleteMapping(value="{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,7 +100,11 @@ public class PropertyController {
                 .map(property -> {
                     logger.info(property.toString());
                     return ResponseEntity.status(HttpStatus.OK).body(property);
-                }).defaultIfEmpty(ResponseEntity.noContent().build());
+                }).defaultIfEmpty(ResponseEntity.noContent().build())
+                .onErrorResume(err->{
+                    logger.error(err.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 
 }
