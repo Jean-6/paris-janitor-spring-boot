@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 @Service
-public class LoadAllRequestsUseCase implements LoadAllRequestsPort {
+public class GetAllRequestsUseCase implements LoadAllRequestsPort {
 
     private final LoadRequestsPort loadRequestsPort;
 
-    public LoadAllRequestsUseCase(LoadRequestsPort loadRequestsPort) {
+    public GetAllRequestsUseCase(LoadRequestsPort loadRequestsPort) {
         this.loadRequestsPort = loadRequestsPort;
     }
 
