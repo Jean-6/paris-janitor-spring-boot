@@ -43,21 +43,17 @@ public class BookingController {
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Booking>> save(@RequestBody Booking booking) {
 
-        try{
-            if(booking.getUserId().isBlank()) {
-                throw new IllegalArgumentException("Test");
-            }
-            return persistBookingPort.saveBooking(booking)
-                    .map(saveBooking -> ResponseEntity.status(HttpStatus.CREATED)
-                            .body(saveBooking))
-                    .onErrorResume(err -> { //erreur se produisant dans la chaine reactive
-                        logger.error("Error saving booking", err);
-                        return Mono.error(new GenericException(err.getMessage()));
-                    });
-        } catch (Exception e){ // Tout autre erreur de maniere globale
-            logger.error(e.getMessage());
-            return Mono.error(new GenericException(e.getMessage()));
-        }
+        return persistBookingPort.saveBooking(booking)
+                .map(bookingSaved->{
+                    logger.debug(bookingSaved.toString());
+                    return ResponseEntity.status(HttpStatus.CREATED)
+                            .body(bookingSaved);
+                }).defaultIfEmpty(ResponseEntity.badRequest().build())
+                .onErrorResume(err->{
+                    logger.error(err.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .build());
+                });
     }
 
 
@@ -81,15 +77,16 @@ public class BookingController {
     }
 
     @GetMapping(value = "/",produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<ResponseEntity<Booking>> getBookings() {
+    public ResponseEntity<Flux<Booking>> getBookings() {
 
-            return loadAllBookingsPort.getAllBookings()
-                    .map(booking -> ResponseEntity.ok().body(booking))
-                    .onErrorResume(err->{
-                        logger.error("Error getting bookings",err);
-                        return Mono.error(new GenericException(err.getMessage()));
-                    });
-
+        Flux<Booking> bookingFlux = loadAllBookingsPort.getAllBookings()
+                .doOnNext(booking ->{logger.info(booking.toString());})
+                .onErrorResume(err->{
+                    logger.error("Error getting bookings", err);
+                    return Flux.error(new GenericException(err.getMessage()));
+                });
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(bookingFlux);
     }
 
     @DeleteMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)

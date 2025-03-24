@@ -40,69 +40,74 @@ public class DeliveryController {
 
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Delivery>> save(@RequestBody Delivery delivery) {
-
-        try{
-            if(delivery.getDescription().isBlank()){
-                throw new Exception("Description is blank");
-            }
-            return persistDeliveryPort.saveDelivery(delivery)
-                    .map(savedDelivery -> ResponseEntity.status(HttpStatus.CREATED)
-                            .body(savedDelivery))
-                    .onErrorResume(err->{
-                        log.error("Error saving delivery", err);
-                        return Mono.error(new GenericException("Error saving delivery"));
-                    });
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return Mono.error(new GenericException("Error saving delivery"));
-        }
-    }
-
-
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Delivery>> getDeliveryById(@RequestParam("id")  String id) {
-
-        try{
-            if(id.isBlank()){
-                throw new Exception("DeliveryReqId is blank");
-            }
-            return loadDeliveryByIdPort.getDeliveryById(id)
-                    .map(delivery -> ResponseEntity.ok().body(delivery))
-                    .switchIfEmpty(Mono.error(new ResourceNotFoundException("DeliveryReqId not found")))
-                    .onErrorResume(err->{
-                        log.error("Error getting delivery", err);
-                        return Mono.error(new GenericException(err.getMessage()));
-                    });
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return Mono.error(new GenericException("Error getting delivery"));
-        }
-    }
-
-
-
-    @GetMapping(value = "/",produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<ResponseEntity<Delivery>> getDeliveries() {
-        return loadAllDeliveriesPort.getAllDeliveries()
-                .map(delivery -> ResponseEntity.ok().body(delivery))
+        return persistDeliveryPort.saveDelivery(delivery)
+                .map(deliverySaved->{
+                    logger.info("save delivery");
+                    return ResponseEntity.status(HttpStatus.CREATED)
+                            .body(deliverySaved);
+                }).defaultIfEmpty(ResponseEntity.badRequest().build())
                 .onErrorResume(err->{
-                    log.error("Error getting deliveries", err);
-                    return Mono.error(new GenericException(err.getMessage()));
+                    logger.error("Saving delivery error : "+err.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
+
+    }
+
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<Delivery>> getDeliveryById(@PathVariable("id")  String id) {
+
+        return loadDeliveryByIdPort.getDeliveryById(id)
+                .map(delivery -> {
+                    logger.info("get delivery");
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body(delivery);
+                }).defaultIfEmpty(ResponseEntity.badRequest().build())
+                .onErrorResume(error->{
+                    logger.info("Error get delivery");
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
                 });
     }
 
-    @DeleteMapping(value = "/{deliveryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public  Mono<ResponseEntity<Void>> deleteDelivery(@PathVariable String id) {
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Flux<Delivery>> getDeliveries() {
+        Flux<Delivery> deliveries = loadAllDeliveriesPort.getAllDeliveries()
+                .doOnNext(delivery -> logger.info("get delivery"))
+                .onErrorResume(err -> {
+                    log.error("Error getting data of deliveries or database access", err);
+                    return Flux.error(err);
+                });
 
-        try{
-            if(id.isBlank()){
-                throw new IllegalArgumentException("id ne peut etre null");
-            }
-            return deleteDeliveryByIdPort.deleteById(id)
-                    .then(Mono.just(ResponseEntity.ok().<Void>build()));
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return Mono.error(new GenericException(e.getMessage()));
-        }
+        return ResponseEntity.ok().body(deliveries);
+    }
+
+    @PutMapping(value="/{id}",consumes=MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<Delivery>> updateDelivery(@PathVariable("id")  String id, @RequestBody Delivery delivery) {
+        return updateDeliveryPort.updateDelivery(id,delivery)
+                .map(delivery1 -> {
+                    logger.info("update delivery");
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body(delivery1);
+                }).defaultIfEmpty(ResponseEntity.badRequest().build())
+                .onErrorResume(err->{
+                    logger.error("Error updating delivery");
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
+    }
+
+
+    @DeleteMapping(value = "/{deliveryId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<Delivery>> deleteDelivery(@PathVariable String id) {
+
+        return deleteDeliveryByIdPort.deleteById(id)
+                .map(delivery->{
+                    logger.info("delete delivery");
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body(delivery);
+                }).defaultIfEmpty(ResponseEntity.badRequest().build())
+                .onErrorResume(err->{
+                    logger.error("Error deleting delivery");
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 }
