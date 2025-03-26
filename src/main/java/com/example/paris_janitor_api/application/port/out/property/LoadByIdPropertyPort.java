@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 
 public interface LoadByIdPropertyPort {
-    Mono<Property> loadById(String id);
+    Mono<Property> findById(String id);
 }

@@ -27,7 +27,7 @@ public class PropertyMongoAdapter implements LoadPropertiesPort,
     }
 
     @Override
-    public Mono<Property> loadById(String id) {
+    public Mono<Property> findById(String id) {
         return propertyReactiveMongoRepo.findById(id);
     }
 
