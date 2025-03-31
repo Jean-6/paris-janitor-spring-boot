@@ -19,9 +19,9 @@ public class Swagger {
                         .version("1.0.0")
                         .description("Documentation d'API REST - Gestion de biens")
                         .contact(new Contact()
-                                .name("Jaures Support Dev")
+                                .name("Jean-Jaures Support Dev")
                                 .email("oka.jeanjaures@gmail.com")
-                                .email("https://github.com/Jean-6/paris-janitor-spring-boot")
+                                .url("https://github.com/Jean-6/paris-janitor-spring-boot")
                         )
                 );
     }
