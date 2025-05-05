@@ -4,7 +4,7 @@ import com.example.paris_janitor_api.core.model.Request;
 
 import java.util.List;
 
-public interface RequestRepository {
+public interface RequestRepo {
     Request save(Request booking);
     List<Request> findAll() ;
     Request findById(String id);

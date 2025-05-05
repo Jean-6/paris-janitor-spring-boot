@@ -4,7 +4,7 @@ import com.example.paris_janitor_api.core.model.Property;
 
 import java.util.List;
 
-public interface PropertyRepository {
+public interface PropertyRepo {
 
     Property save(Property property);
     List<Property> findAll() ;

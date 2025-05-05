@@ -4,7 +4,7 @@ import com.example.paris_janitor_api.core.model.Booking;
 
 import java.util.List;
 
-public interface BookingRepository {
+public interface BookingRepo {
 
     Booking save(Booking booking);
     List<Booking> findAll() ;
