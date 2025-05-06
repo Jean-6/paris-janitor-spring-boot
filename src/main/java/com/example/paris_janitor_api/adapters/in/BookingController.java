@@ -6,6 +6,12 @@ import com.example.paris_janitor_api.core.model.Booking;
 import com.example.paris_janitor_api.infrastructure.exception.GenericException;
 import com.example.paris_janitor_api.infrastructure.exception.IllegalArgumentException;
 import com.example.paris_janitor_api.infrastructure.exception.ResourceNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +26,7 @@ import reactor.core.publisher.Mono;
 @Log4j2
 @RestController
 @RequestMapping("/api/booking")
+@Tag(name = "Booking API", description = "Booking management")
 public class BookingController {
 
     private final DeleteBookingByIdPort deleteBookingByIdPort;
@@ -40,6 +47,13 @@ public class BookingController {
     }
 
 
+    @Operation(summary = "Create a new booking", description = "Save a new booking in the system")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Booking created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid booking data",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Booking>> save(@RequestBody Booking booking) {
 
@@ -56,7 +70,15 @@ public class BookingController {
                 });
     }
 
-
+    @Operation(summary = "Retrieve a booking by ID", description = "Get a booking from the system using its unique ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Booking retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid ID provided",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Booking not found",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Booking>> getBookingById(@RequestParam("id") String id) {
         try {
@@ -76,6 +98,11 @@ public class BookingController {
         }
     }
 
+    @Operation(summary = "Retrieve all bookings", description = "Get all bookings stored in the system")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bookings retrieved successfully"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping(value = "/",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Flux<Booking>> getBookings() {
 
@@ -89,6 +116,13 @@ public class BookingController {
                 .body(bookingFlux);
     }
 
+    @Operation(summary = "Delete a booking by ID", description = "Remove a booking from the system using its unique ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Booking deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Booking not found",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @DeleteMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Void>> delete(@PathVariable("id") String id) {
 
@@ -105,6 +139,15 @@ public class BookingController {
         }
     }
 
+    @Operation(summary = "Update a booking by ID", description = "Modify an existing booking in the system using its unique ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Booking updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid booking data or empty ID",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Booking not found",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PutMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Booking>> update(@PathVariable("id") String id, @RequestBody Booking booking) {
 
