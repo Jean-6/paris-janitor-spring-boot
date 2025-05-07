@@ -12,9 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +21,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/api/booking")
 @Tag(name = "Booking API", description = "Booking management")
@@ -34,9 +32,6 @@ public class BookingController {
     private final LoadBookingByIdPort loadBookingByIdPort;
     private final PersistBookingPort persistBookingPort;
     private final UpdateBookingPort updateBookingPort;
-
-
-    static Logger logger = LoggerFactory.getLogger(BookingController.class);
 
     public BookingController(DeleteBookingByIdPort deleteBookingByIdPort, LoadAllBookingsPort loadAllBookingsPort, LoadBookingByIdPort loadBookingByIdPort, PersistBookingPort persistBookingPort, UpdateBookingPort updateBookingPort) {
         this.deleteBookingByIdPort = deleteBookingByIdPort;
@@ -59,12 +54,12 @@ public class BookingController {
 
         return persistBookingPort.saveBooking(booking)
                 .map(bookingSaved->{
-                    logger.debug(bookingSaved.toString());
+                    log.debug(bookingSaved.toString());
                     return ResponseEntity.status(HttpStatus.CREATED)
                             .body(bookingSaved);
                 }).defaultIfEmpty(ResponseEntity.badRequest().build())
                 .onErrorResume(err->{
-                    logger.error(err.getMessage());
+                    log.error(err.getMessage());
                     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .build());
                 });
@@ -89,7 +84,7 @@ public class BookingController {
                     .map(booking -> ResponseEntity.ok().body(booking))
                     .switchIfEmpty(Mono.error(new ResourceNotFoundException("Booking not found")))
                     .onErrorResume(error->{
-                        logger.error("Error getting booking", error);
+                        log.error("Error getting booking", error);
                         return Mono.error(new GenericException(error.getMessage()));
                     });
         }catch (Exception e){
@@ -107,9 +102,9 @@ public class BookingController {
     public ResponseEntity<Flux<Booking>> getBookings() {
 
         Flux<Booking> bookingFlux = loadAllBookingsPort.getAllBookings()
-                .doOnNext(booking ->{logger.info(booking.toString());})
+                .doOnNext(booking ->{log.info(booking.toString());})
                 .onErrorResume(err->{
-                    logger.error("Error getting bookings", err);
+                    log.error("Error getting bookings", err);
                     return Flux.error(new GenericException(err.getMessage()));
                 });
         return ResponseEntity.status(HttpStatus.OK)
@@ -134,7 +129,7 @@ public class BookingController {
             return deleteBookingByIdPort.deleteById(id)
                     .then(Mono.just(ResponseEntity.ok().build()));
         }catch (Exception ex){
-            logger.error(ex.getMessage());
+            log.error(ex.getMessage());
             return Mono.error(new GenericException(ex.getMessage()));
         }
     }
@@ -164,7 +159,7 @@ public class BookingController {
                         return Mono.error(new GenericException(err.getMessage()));
                     });
         }catch (Exception e){
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             return Mono.error(new GenericException(e.getMessage()));
         }
     }
