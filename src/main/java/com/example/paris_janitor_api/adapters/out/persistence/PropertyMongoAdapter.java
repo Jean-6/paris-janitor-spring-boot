@@ -39,7 +39,7 @@ public class PropertyMongoAdapter implements LoadPropertiesPort,
     }
 
     @Override
-    public Mono<Property> saveBooking(Property property) {
+    public Mono<Property> saveProperty(Property property) {
         return propertyReactiveMongoRepo.save(property);
     }
 
@@ -47,8 +47,9 @@ public class PropertyMongoAdapter implements LoadPropertiesPort,
     public Mono<Property> findByIdAndUpdate(String id, Property property) {
         return propertyReactiveMongoRepo.findById(id)
                 .flatMap(existingProperty -> {
-                    existingProperty.setDescription(property.getDescription());
-
+                    existingProperty.setDetails(property.getDetails());
+                    existingProperty.setFacilities(property.getFacilities());
+                    existingProperty.setFinancial(property.getFinancial());
                     return propertyReactiveMongoRepo.save(existingProperty);
                 });
     }

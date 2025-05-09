@@ -6,7 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "owner")
 public class Owner {
 
-    private String name;
+    private String ownerId;
+    /*private String name;
     private String contact;
-    private String email;
+    private String email;*/
 }

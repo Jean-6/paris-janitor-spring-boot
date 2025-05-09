@@ -17,6 +17,6 @@ public class PersistPropertyUseCase implements PersistPropertyPort {
 
     @Override
     public Mono<Property> save(Property property) {
-       return persistPropertyPort.saveBooking(property);
+       return persistPropertyPort.saveProperty(property);
     }
 }

@@ -4,5 +4,5 @@ import com.example.paris_janitor_api.core.model.Property;
 import reactor.core.publisher.Mono;
 
 public interface PersistPropertyPort {
-    Mono<Property> saveBooking(Property property);
+    Mono<Property> saveProperty(Property property);
 }
