@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 public class Booking {
     @Id
     private String id;
-    private String type;
-    private String description;
     private String propertyId;
     private String userId;
+    private String startDate;
+    private String endDate;
     private LocalDateTime createdAt;
 }

@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
+
 @Component
 public class BookingMongoAdapter implements
         PersistBookingPort,
@@ -41,16 +42,16 @@ public class BookingMongoAdapter implements
     }
 
     @Override
-    public Mono<Booking> saveBooking(Booking booking) {
-        return bookingReactiveMongoRepo.save(booking);
-    }
-
-    @Override
     public Mono<Booking> findByIdAndUpdate(String id, Booking booking) {
         return bookingReactiveMongoRepo.findById(id)
                 .flatMap(existingBooking -> {
                     existingBooking.setUserId(booking.getUserId());
                     return bookingReactiveMongoRepo.save(existingBooking);
                 });
+    }
+
+    @Override
+    public Flux<Booking> saveBooking(Flux<Booking> booking) {
+        return bookingReactiveMongoRepo.saveAll(booking);
     }
 }

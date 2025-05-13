@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 
 @Slf4j
 @RestController
@@ -44,20 +46,18 @@ public class BookingController {
 
     @Operation(summary = "Create a new booking", description = "Save a new booking in the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Booking created successfully"),
+            @ApiResponse(responseCode = "201", description = "Booking successfully created"),
             @ApiResponse(responseCode = "400", description = "Invalid booking data",
                     content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Booking>> save(@RequestBody Booking booking) {
+    public Mono<ResponseEntity<List<Booking>>> save(@RequestBody Flux<Booking> bookings) {
 
-        return persistBookingPort.saveBooking(booking)
-                .map(bookingSaved->{
-                    log.debug(bookingSaved.toString());
-                    return ResponseEntity.status(HttpStatus.CREATED)
-                            .body(bookingSaved);
-                }).defaultIfEmpty(ResponseEntity.badRequest().build())
+        return persistBookingPort.saveBooking(bookings)
+                .collectList()
+                .map(savedBookings -> ResponseEntity.status(HttpStatus.OK).body(savedBookings))
+                .defaultIfEmpty(ResponseEntity.badRequest().build())
                 .onErrorResume(err->{
                     log.error(err.getMessage());
                     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
