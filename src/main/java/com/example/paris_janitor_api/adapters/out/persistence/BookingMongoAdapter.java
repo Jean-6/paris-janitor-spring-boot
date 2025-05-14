@@ -36,10 +36,17 @@ public class BookingMongoAdapter implements
         return bookingReactiveMongoRepo.findAll();
     }
 
+
     @Override
     public Mono<Booking> findById(String id) {
         return bookingReactiveMongoRepo.findById(id);
     }
+
+    @Override
+    public Flux<Booking> findByPropertyId(String propertyId) {
+        return bookingReactiveMongoRepo.findBookingByPropertyId(propertyId);
+    }
+
 
     @Override
     public Mono<Booking> findByIdAndUpdate(String id, Booking booking) {

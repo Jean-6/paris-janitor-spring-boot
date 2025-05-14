@@ -65,6 +65,34 @@ public class BookingController {
                 });
     }
 
+
+    @Operation(summary = "Fetch property bookings", description = "Retrieve all bookings associated with a given property ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bookings successfully retrieved"),
+            @ApiResponse(responseCode = "400", description = "Provided property ID is invalid",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "No bookings found for the given property ID",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error occurred")
+    })
+    @GetMapping(value = "property/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<List<Booking>>> getBookingsByPropertyId(@PathVariable("id") String id) {
+
+        if (id.isBlank()) {
+            return Mono.just(ResponseEntity.badRequest().build());
+        }
+        return loadBookingByIdPort.getBookingByPropertyId(id)
+                .collectList()
+                .map(bookings -> {
+                    if (bookings.isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).<List<Booking>>build();
+                    }
+                    return ResponseEntity.ok(bookings);
+                })
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+
     @Operation(summary = "Retrieve a booking by ID", description = "Get a booking from the system using its unique ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Booking retrieved successfully"),
@@ -89,7 +117,6 @@ public class BookingController {
                     });
         }catch (Exception e){
             return Mono.error(new GenericException(""));
-
         }
     }
 
