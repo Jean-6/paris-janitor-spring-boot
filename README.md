@@ -1,85 +1,40 @@
 # ParisJanitor - Microservice des biens immobiliers
 
-<!--Une brève description de votre projet -->
-Ce microservice est une composante autonome conçue selon la clean architecture, elle se concentre uniquement sur les fonctionnalités liées à la gestion des utilisateurs.
+## 📖Table des matières
 
-## Table des matières
+1. ✅[Introduction](#introduction)
+2. 📦[Prérequis](#prérequis)
+3. 🧱[Architecture](#architecture)
+3. ⚙️[Installation](#installation)
+4. 🔧[Configuration](#configuration)
+5. 🚀[Utilisation](#utilisation)
+6. 🧪[Tests](#tests)
+7. 🧑‍💻[Contribuer](#contribuer)
+8. 📄[Licence](#licence)
+9. 📦[Deploiement](#deploiement)
+10. ⭐[Points importants](#Terminaison API)
+11. 🔐[Authentification](#Authentification)
+12. 🛠️[Dépannage](#Dépannage)
 
-1. [Introduction](#introduction)
-2. [Architecture](#architecture)
-3. [Prérequis](#prérequis)
-4. [Installation](#installation)
-5. [Configuration](#configuration)
-6. [Utilisation](#utilisation)
-7. [Tests](#tests)
-8. [Contribuer](#contribuer)
-9. [Licence](#licence)
-10. [Deploiement](#deploiement)
-11. [Points](#Points de Terminaison API)
-12. [Authentification](#Authentification)
-13. [Exemples](#Exemples)
-14. [Depannage](#Dépannage)
 
 
 ## Introduction
 
-<!--Fournir une description plus détaillée de votre projet, en Expliquant les objectifs, les fonctionnalités principales et le contexte du projet.-->
+Ce microservice est une composante autonome conçue selon la clean architecture, elle se concentre sur les 
+ressources liées aux propriétés , aux réservations et diverses prestations  .
 
 ## Prérequis
 
 - Java 17
 - Maven 3.9.9
+- Docker
 - Spring Boot 3.3.5
+- OpenAPI
 - Base de données relationnelles: Mongo Atlas
 - Spring Security (Basic Auth)
-- Spring Webflux
+- RabbitMQ
 
-## Architecture 
-
-<!--
-com.example.paris-janitor-api
-├── application            # 💡 Couche Application (Use Cases et Ports)
-│   ├── port              # Définition des interfaces (Ports IN & OUT)
-│   │   ├── in            # Ports d'entrée (actions disponibles pour les Adapters IN)
-│   │   │   ├── CreateProductPort.java
-│   │   │   ├── GetAllProductsPort.java
-│   │   ├── out           # Ports de sortie (interactions avec la base, services externes)
-│   │   │   ├── LoadProductsPort.java
-│   │   │   ├── PersistProductPort.java
-│   ├── usecase           # Implémentation des Use Cases (n'intéragit pas avec la BD mais passe toujours par un Port OUT pour recuperer les donnees
-│   │   ├── CreateProductUseCase.java
-│   │   ├── GetAllProductsUseCase.java
-│
-├── domain                # 💡 Couche Domaine (Entités et Logique Métier)
-│   ├── model             # Modèles métiers (sans dépendance à Spring ou MongoDB)
-│   │   ├── Product.java
-│   ├── exception         # Gestion des exceptions métier
-│   │   ├── InvalidProductException.java
-│
-├── adapters              # 💡 Couche Adapters (Implémentations des Ports)
-│   ├── in                # Implémentations des ports d'entrée (API REST, Kafka, CLI...)
-│   │   ├── rest          # Adapter pour une API REST
-│   │   │   ├── ProductController.java
-│   │   ├── event         # Adapter pour un Event Listener (Kafka, RabbitMQ, etc.)
-│   │   │   ├── ProductEventListener.java
-│   ├── out               # Implémentations des ports de sortie (Base de données, Services externes...)
-│   │   ├── persistence   # Accès à MongoDB via Spring Data
-│   │   │   ├── ProductMongoRepository.java
-│   │   │   ├── ProductMongoAdapter.java
-│   │   ├── external      # Appels vers des services externes (API tierces)
-│   │   │   ├── ExternalPricingService.java
-│
-├── infrastructure        # 💡 Couche Infrastructure (Frameworks, Configurations, Security)
-│   ├── config            # Configuration Spring Boot
-│   │   ├── MongoConfig.java
-│   │   ├── SecurityConfig.java
-│   ├── exception         # Gestion des exceptions globales (Controller Advice)
-│   │   ├── GlobalExceptionHandler.java
-│
-├── CleanArchApplication.java  # 🚀 Classe principale Spring Boot
-└── resources
-├── application.yml        # Configuration (MongoDB, Spring, etc.)
-
+## Architectur
 
 📌 Détails et Responsabilités de chaque couche
 ├──------------------------------------------------------------------------------------------------------
@@ -91,7 +46,7 @@ com.example.paris-janitor-api
 |infrastructure| Contient les configurations, sécurité, gestion des exceptions
 ├──------------------------------------------------------------------------------------------------------
 
--->
+
 
 ## Points de terminaison
 
@@ -125,3 +80,25 @@ com.example.paris-janitor-api
 - GET /request/{id} : Récupérer les détails d'une demande.
 - PUT /request/{id} : Mettre à jour les informations d'une demande.
 - DELETE /request/{id} : Supprimer une demande.
+
+
+### Depannage
+
+1. Ajouter Mockito comme agent JVM
+
+Mockito is currently self-attaching to enable the inline-mock-maker.
+
+WARNING: Au lancement du Clean install ,Ce warning est lié à Mockito et à son inline-mock-maker, qui permet de mocker des classes finales et statiques. 
+
+#### Solution possible 
+
+2.L'erreur "The forked VM terminated without properly saying goodbye"
+
+Problème lié à Maven Surefire lors de l'exécution des tests, Si les tests consomment trop de mémoire, la JVM peut crasher.
+
+#### Solution possible 
+
+Augmenter la mémoire disponible pour Maven Surefire dans les pugins du ton pom.xml
+
+
+3. Error processing condition on org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration.propertySourcesPlaceholderConfigurer
