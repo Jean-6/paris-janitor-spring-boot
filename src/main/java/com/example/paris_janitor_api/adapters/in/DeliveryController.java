@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -36,7 +34,7 @@ public class DeliveryController {
         this.updateDeliveryPort = updateDeliveryPort;
     }
 
-
+/*
     @Operation(summary = "Create a new delivery", description = "Save a new delivery in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Delivery created successfully"),
@@ -143,5 +141,5 @@ public class DeliveryController {
                     log.error("Error deleting delivery");
                     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
                 });
-    }
+    }*/
 }

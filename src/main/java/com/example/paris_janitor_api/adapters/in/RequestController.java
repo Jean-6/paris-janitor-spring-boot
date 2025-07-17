@@ -14,9 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/request")
@@ -36,7 +33,7 @@ public class RequestController {
         this.loadRequestByIdPort = loadRequestByIdPort;
         this.persistRequestPort = persistRequestPort;
     }
-
+/*
     @Operation(summary = "Create a new client request", description = "Save a new request in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Request created successfully"),
@@ -147,6 +144,6 @@ public class RequestController {
                     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
                 });
 
-    }
+    }*/
 
 }

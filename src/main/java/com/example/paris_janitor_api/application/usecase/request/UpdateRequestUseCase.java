@@ -4,7 +4,6 @@ package com.example.paris_janitor_api.application.usecase.request;
 import com.example.paris_janitor_api.application.port.out.request.UpdateRequestPort;
 import com.example.paris_janitor_api.core.model.Request;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 @Service
 public class UpdateRequestUseCase implements com.example.paris_janitor_api.application.port.in.request.UpdateRequestPort {
@@ -17,7 +16,7 @@ public class UpdateRequestUseCase implements com.example.paris_janitor_api.appli
 
 
     @Override
-    public Mono<Request> updateRequest(String id, Request request) {
+    public Request updateRequest(String id, Request request) {
         return updateRequestPort.findByIdAndUpdate(id, request);
     }
 

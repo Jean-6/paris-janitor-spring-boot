@@ -3,7 +3,6 @@ package com.example.paris_janitor_api.application.usecase.request;
 import com.example.paris_janitor_api.application.port.in.request.LoadRequestByIdPort;
 import com.example.paris_janitor_api.core.model.Request;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 @Service
 public class GetRequestByIdUseCase implements LoadRequestByIdPort {
@@ -15,7 +14,7 @@ public class GetRequestByIdUseCase implements LoadRequestByIdPort {
     }
 
     @Override
-    public Mono<Request> getRequestById(String id) {
+    public Request getRequestById(String id) {
         return loadRequestByIdPort.findById(id);
     }
 

@@ -3,22 +3,20 @@ package com.example.paris_janitor_api.adapters.in;
 
 import com.example.paris_janitor_api.application.port.in.booking.*;
 import com.example.paris_janitor_api.core.model.Booking;
-import com.example.paris_janitor_api.infrastructure.exception.GenericException;
-import com.example.paris_janitor_api.infrastructure.exception.IllegalArgumentException;
-import com.example.paris_janitor_api.infrastructure.exception.ResourceNotFoundException;
+import com.example.paris_janitor_api.infrastructure.web.ResponseWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.List;
 
@@ -52,17 +50,11 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<Booking>>> save(@RequestBody Flux<Booking> bookings) {
+    public ResponseEntity<ResponseWrapper<Booking>> save(@RequestBody Booking booking, HttpServletRequest request) {
 
-        return persistBookingPort.saveBooking(bookings)
-                .collectList()
-                .map(savedBookings -> ResponseEntity.status(HttpStatus.OK).body(savedBookings))
-                .defaultIfEmpty(ResponseEntity.badRequest().build())
-                .onErrorResume(err->{
-                    log.error(err.getMessage());
-                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .build());
-                });
+        Booking bookingSaved = persistBookingPort.saveBooking(booking);
+        return ResponseEntity.ok(
+                ResponseWrapper.ok("",request.getRequestURI(),bookingSaved));
     }
 
 
@@ -76,20 +68,11 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error occurred")
     })
     @GetMapping(value = "property/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<Booking>>> getBookingsByPropertyId(@PathVariable("id") String id) {
+    public ResponseEntity<ResponseWrapper<List<Booking>>> getBookingsByPropertyId(@PathVariable("id") String id, HttpServletRequest request) {
 
-        if (id.isBlank()) {
-            return Mono.just(ResponseEntity.badRequest().build());
-        }
-        return loadBookingByIdPort.getBookingByPropertyId(id)
-                .collectList()
-                .map(bookings -> {
-                    if (bookings.isEmpty()) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).<List<Booking>>build();
-                    }
-                    return ResponseEntity.ok(bookings);
-                })
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        List<Booking> bookings = loadBookingByIdPort.getBookingByPropertyId(id);
+        return ResponseEntity.ok(
+                ResponseWrapper.ok("",request.getRequestURI(),bookings));
     }
 
 
@@ -103,21 +86,11 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Booking>> getBookingById(@RequestParam("id") String id) {
-        try {
-            if (id.isBlank()) {
-                return Mono.error(new IllegalArgumentException("id ne peut être vide"));
-            }
-            return loadBookingByIdPort.getBookingById(id)
-                    .map(booking -> ResponseEntity.ok().body(booking))
-                    .switchIfEmpty(Mono.error(new ResourceNotFoundException("Booking not found")))
-                    .onErrorResume(error->{
-                        log.error("Error getting booking", error);
-                        return Mono.error(new GenericException(error.getMessage()));
-                    });
-        }catch (Exception e){
-            return Mono.error(new GenericException(""));
-        }
+    public ResponseEntity<ResponseWrapper<Booking>> getBookingById(@RequestParam("id") String id, HttpServletRequest request) {
+
+        Booking booking = loadBookingByIdPort.getBookingById(id);
+        return ResponseEntity.ok(
+                ResponseWrapper.ok("",request.getRequestURI(),booking));
     }
 
     @Operation(summary = "Retrieve all bookings", description = "Get all bookings stored in the system")
@@ -126,16 +99,11 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Flux<Booking>> getBookings() {
+    public ResponseEntity<ResponseWrapper<List<Booking>>> getBookings(HttpServletRequest request) {
 
-        Flux<Booking> bookingFlux = loadAllBookingsPort.getAllBookings()
-                .doOnNext(booking ->{log.info(booking.toString());})
-                .onErrorResume(err->{
-                    log.error("Error getting bookings", err);
-                    return Flux.error(new GenericException(err.getMessage()));
-                });
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(bookingFlux);
+        List<Booking> bookings = loadAllBookingsPort.getAllBookings();
+        return ResponseEntity.ok(
+                ResponseWrapper.ok("",request.getRequestURI(),bookings));
     }
 
     @Operation(summary = "Delete a booking by ID", description = "Remove a booking from the system using its unique ID")
@@ -146,19 +114,10 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Void>> delete(@PathVariable("id") String id) {
-
-        try {
-            if (id.isBlank()) {
-                // return Mono.error(new IllegalArgumentException("id ne peut pas être null ou vide")); // Gestion des erreurs invalides
-                throw new IllegalArgumentException("id ne peut etre null");
-            }
-            return deleteBookingByIdPort.deleteById(id)
-                    .then(Mono.just(ResponseEntity.ok().build()));
-        }catch (Exception ex){
-            log.error(ex.getMessage());
-            return Mono.error(new GenericException(ex.getMessage()));
-        }
+    public ResponseEntity<ResponseWrapper<Booking>> delete(@PathVariable("id") String id, HttpServletRequest request) {
+        deleteBookingByIdPort.deleteById(id);
+        return ResponseEntity.ok(
+                ResponseWrapper.ok("Reservation  supprimée ",request.getRequestURI()));
     }
 
     @Operation(summary = "Update a booking by ID", description = "Modify an existing booking in the system using its unique ID")
@@ -171,24 +130,11 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Booking>> update(@PathVariable("id") String id, @RequestBody Booking booking) {
+    public ResponseEntity<ResponseWrapper<Booking>> update(@PathVariable("id") String id, @RequestBody Booking booking, HttpServletRequest request) {
 
-        try{
-            if (id.isBlank()) {
-                throw new IllegalArgumentException("Test");
-            }
-            Booking newBooking = new Booking();
-            return updateBookingPort.updateBooking(id,newBooking)
-                    .map(bookingUpdated->ResponseEntity.ok()
-                            .body(bookingUpdated))
-                    .defaultIfEmpty(ResponseEntity.notFound().build())
-                    .onErrorResume(err->{
-                        return Mono.error(new GenericException(err.getMessage()));
-                    });
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return Mono.error(new GenericException(e.getMessage()));
-        }
+        Booking booking1=updateBookingPort.updateBooking(id,booking);
+        return ResponseEntity.ok(
+                ResponseWrapper.ok("",request.getRequestURI(),booking1));
     }
 
 }

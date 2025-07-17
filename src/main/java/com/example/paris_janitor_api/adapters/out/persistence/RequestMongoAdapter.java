@@ -3,10 +3,12 @@ package com.example.paris_janitor_api.adapters.out.persistence;
 
 import com.example.paris_janitor_api.application.port.out.request.*;
 import com.example.paris_janitor_api.core.model.Request;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.util.List;
+
+@Slf4j
 @Component
 public class RequestMongoAdapter implements
         DeleteByIdRequestPort,
@@ -15,41 +17,48 @@ public class RequestMongoAdapter implements
         PersistRequestPort,
         UpdateRequestPort {
 
-    private final RequestReactiveMongoRepo requestReactiveMongoRepo;
+    private final RequestMongoRepo requestMongoRepo;
 
-    public RequestMongoAdapter(RequestReactiveMongoRepo requestReactiveMongoRepo) {
-        this.requestReactiveMongoRepo = requestReactiveMongoRepo;
+    public RequestMongoAdapter(RequestMongoRepo requestMongoRepo) {
+        this.requestMongoRepo = requestMongoRepo;
     }
 
     @Override
-    public Mono<Request> deleteById(String id) {
-        return requestReactiveMongoRepo.findById(id)
-                .flatMap(existingRequest -> requestReactiveMongoRepo.delete(existingRequest)
-                        .then(Mono.just(existingRequest)));
+    public  void deleteById(String id) {
+        requestMongoRepo.deleteById(id);
     }
 
     @Override
-    public Flux<Request> findAll() {
-        return requestReactiveMongoRepo.findAll();
+    public List<Request> findAll() {
+        return requestMongoRepo.findAll();
     }
 
     @Override
-    public Mono<Request> findById(String id) {
-        return requestReactiveMongoRepo.findById(id);
+    public Request findById(String id) {
+
+        return requestMongoRepo.findById(id)
+                .orElseThrow();
     }
 
     @Override
-    public Mono<Request> saveRequest(Request request) {
-        return requestReactiveMongoRepo.save(request);
+    public Request saveRequest(Request request) {
+        return requestMongoRepo.save(request);
     }
 
     @Override
-    public Mono<Request> findByIdAndUpdate(String id, Request request) {
-        return requestReactiveMongoRepo.findById(id)
-                .flatMap(existingRequest -> {
-                    existingRequest.setType(request.getType());
+    public Request findByIdAndUpdate(String id, Request request) {
 
-                    return requestReactiveMongoRepo.save(existingRequest);
-                });
+        Request request1 = requestMongoRepo.findById(id)
+                        .orElseThrow();
+
+        request1.setPropertyId(request.getPropertyId());
+        request1.setType(request.getType());
+        request1.setDescription(request.getDescription());
+        request1.setStages(request.getStages());
+        request1.setUserId(request.getUserId());
+       // request1.setProviderId();
+        request1.setCreatedAt(request.getCreatedAt());
+
+        return requestMongoRepo.save(request1);
     }
 }

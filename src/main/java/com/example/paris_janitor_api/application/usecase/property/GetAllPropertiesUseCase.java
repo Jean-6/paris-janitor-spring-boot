@@ -5,7 +5,8 @@ import com.example.paris_janitor_api.application.port.in.property.LoadAllPropert
 import com.example.paris_janitor_api.application.port.out.property.LoadPropertiesPort;
 import com.example.paris_janitor_api.core.model.Property;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Service
 public class GetAllPropertiesUseCase implements LoadAllPropertiesPort {
@@ -18,7 +19,7 @@ public class GetAllPropertiesUseCase implements LoadAllPropertiesPort {
 
 
     @Override
-    public Flux<Property> getAllProperties() {
+    public List<Property> getAllProperties() {
         return loadPropertiesPort.loadAll();
     }
 }

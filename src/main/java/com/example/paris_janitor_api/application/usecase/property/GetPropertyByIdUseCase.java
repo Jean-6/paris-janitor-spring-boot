@@ -4,7 +4,6 @@ package com.example.paris_janitor_api.application.usecase.property;
 import com.example.paris_janitor_api.application.port.in.property.LoadPropertyByIdPort;
 import com.example.paris_janitor_api.core.model.Property;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 @Service
 public class GetPropertyByIdUseCase implements LoadPropertyByIdPort {
@@ -17,7 +16,7 @@ public class GetPropertyByIdUseCase implements LoadPropertyByIdPort {
     }
 
     @Override
-    public Mono<Property> getPropertyById(String id) {
+    public Property getPropertyById(String id) {
         return propertyPort.findById(id);
 
     }

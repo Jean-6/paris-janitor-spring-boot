@@ -3,7 +3,6 @@ package com.example.paris_janitor_api.application.usecase.property;
 import com.example.paris_janitor_api.application.port.in.property.UpdatePropertyPort;
 import com.example.paris_janitor_api.core.model.Property;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 @Service
 public class UpdatePropertyUseCase implements UpdatePropertyPort {
@@ -16,7 +15,7 @@ public class UpdatePropertyUseCase implements UpdatePropertyPort {
     }
 
     @Override
-    public Mono<Property> updateProperty(String id, Property property) {
+    public Property updateProperty(String id, Property property) {
         return updatePropertyPort.findByIdAndUpdate(id,property);
     }
 

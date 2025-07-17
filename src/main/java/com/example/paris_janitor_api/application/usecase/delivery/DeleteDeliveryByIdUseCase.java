@@ -2,9 +2,7 @@ package com.example.paris_janitor_api.application.usecase.delivery;
 
 import com.example.paris_janitor_api.application.port.in.delivery.DeleteDeliveryByIdPort;
 
-import com.example.paris_janitor_api.core.model.Delivery;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 
 @Service
@@ -18,7 +16,7 @@ public class DeleteDeliveryByIdUseCase implements DeleteDeliveryByIdPort {
     }
 
     @Override
-    public Mono<Delivery> deleteById(String id) {
-        return deleteDeliveryByIdPort.deleteById(id);
+    public void deleteById(String id) {
+        deleteDeliveryByIdPort.deleteById(id);
     }
 }

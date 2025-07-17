@@ -1,9 +1,11 @@
 package com.example.paris_janitor_api.application.port.in.booking;
 
 import com.example.paris_janitor_api.core.model.Booking;
-import reactor.core.publisher.Flux;
+
+
+import java.util.List;
 
 
 public interface LoadAllBookingsPort {
-    Flux<Booking> getAllBookings();
+    List<Booking> getAllBookings();
 }

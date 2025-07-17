@@ -4,9 +4,8 @@ import com.example.paris_janitor_api.application.port.out.booking.*;
 import com.example.paris_janitor_api.core.model.Booking;
 
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.util.List;
 
 
 @Component
@@ -18,47 +17,54 @@ public class BookingMongoAdapter implements
         UpdateBookingPort
 {
 
-    private final BookingReactiveMongoRepo bookingReactiveMongoRepo;
+    private final BookingMongoRepo bookingMongoRepo;
 
-    public BookingMongoAdapter(BookingReactiveMongoRepo bookingReactiveMongoRepo) {
-        this.bookingReactiveMongoRepo = bookingReactiveMongoRepo;
+    public BookingMongoAdapter(BookingMongoRepo bookingMongoRepo) {
+        this.bookingMongoRepo = bookingMongoRepo;
     }
 
     @Override
-    public Mono<Booking> deleteById(String id) {
-        return bookingReactiveMongoRepo.findById(id)
-                .flatMap(existingBooking -> bookingReactiveMongoRepo.delete(existingBooking)
-                .then(Mono.just(existingBooking)));
+    public void deleteById(String id) {
+
+        Booking booking = bookingMongoRepo.findById(id)
+                .orElseThrow();
+        bookingMongoRepo.delete(booking);
     }
 
     @Override
-    public Flux<Booking> findAll() {
-        return bookingReactiveMongoRepo.findAll();
-    }
-
-
-    @Override
-    public Mono<Booking> findById(String id) {
-        return bookingReactiveMongoRepo.findById(id);
-    }
-
-    @Override
-    public Flux<Booking> findByPropertyId(String propertyId) {
-        return bookingReactiveMongoRepo.findBookingByPropertyId(propertyId);
+    public List<Booking> findAll() {
+        return bookingMongoRepo.findAll();
     }
 
 
     @Override
-    public Mono<Booking> findByIdAndUpdate(String id, Booking booking) {
-        return bookingReactiveMongoRepo.findById(id)
-                .flatMap(existingBooking -> {
-                    existingBooking.setUserId(booking.getUserId());
-                    return bookingReactiveMongoRepo.save(existingBooking);
-                });
+    public Booking findById(String id) {
+        return bookingMongoRepo.findById(id)
+                .orElseThrow();
     }
 
     @Override
-    public Flux<Booking> saveBooking(Flux<Booking> booking) {
-        return bookingReactiveMongoRepo.saveAll(booking);
+    public List<Booking> findByPropertyId(String propertyId) {
+        return bookingMongoRepo.findBookingByPropertyId(propertyId);
+    }
+
+
+    @Override
+    public Booking findByIdAndUpdate(String id, Booking booking) {
+        Booking booking1=bookingMongoRepo.findById(id)
+                .orElseThrow();
+        booking1.setPropertyId(booking.getPropertyId());
+        booking1.setUserId(booking.getUserId());
+        booking1.setStartDate(booking.getStartDate());
+        booking1.setEndDate(booking.getEndDate());
+        booking1.setCreatedAt(booking.getCreatedAt());
+
+        return bookingMongoRepo.save(booking1);
+
+    }
+
+    @Override
+    public Booking saveBooking(Booking booking) {
+        return bookingMongoRepo.save(booking);
     }
 }

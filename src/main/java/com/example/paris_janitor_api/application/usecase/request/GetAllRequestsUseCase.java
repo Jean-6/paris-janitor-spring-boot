@@ -4,7 +4,8 @@ import com.example.paris_janitor_api.application.port.in.request.LoadAllRequests
 import com.example.paris_janitor_api.application.port.out.request.LoadRequestsPort;
 import com.example.paris_janitor_api.core.model.Request;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Service
 public class GetAllRequestsUseCase implements LoadAllRequestsPort {
@@ -17,7 +18,7 @@ public class GetAllRequestsUseCase implements LoadAllRequestsPort {
 
 
     @Override
-    public Flux<Request> getAllRequest() {
+    public List<Request> getAllRequest() {
         return loadRequestsPort.findAll();
     }
 }

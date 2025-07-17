@@ -3,7 +3,6 @@ package com.example.paris_janitor_api.application.usecase.booking;
 import com.example.paris_janitor_api.application.port.in.booking.DeleteBookingByIdPort;
 import com.example.paris_janitor_api.core.model.Booking;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 
 @Service
@@ -18,8 +17,8 @@ public class DeleteBookingByIdUseCase implements DeleteBookingByIdPort {
     }
 
     @Override
-    public Mono<Booking> deleteById(String bookingId) {
-        return deleteBookingByIdPort.deleteById(bookingId);
+    public void deleteById(String bookingId) {
+        deleteBookingByIdPort.deleteById(bookingId);
     }
 
 }

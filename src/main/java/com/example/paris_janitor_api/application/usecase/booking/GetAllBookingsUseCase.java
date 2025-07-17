@@ -4,7 +4,8 @@ package com.example.paris_janitor_api.application.usecase.booking;
 import com.example.paris_janitor_api.application.port.out.booking.LoadBookingsPort;
 import com.example.paris_janitor_api.core.model.Booking;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 
 @Service
@@ -20,7 +21,7 @@ public class GetAllBookingsUseCase implements com.example.paris_janitor_api.appl
 
 
     @Override
-    public Flux<Booking> getAllBookings() {
+    public List<Booking> getAllBookings() {
         return loadBookingsPort.findAll();
     }
 }

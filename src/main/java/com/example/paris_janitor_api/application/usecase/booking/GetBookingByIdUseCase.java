@@ -4,8 +4,8 @@ package com.example.paris_janitor_api.application.usecase.booking;
 import com.example.paris_janitor_api.application.port.in.booking.LoadBookingByIdPort;
 import com.example.paris_janitor_api.core.model.Booking;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 
 @Service
@@ -19,12 +19,12 @@ public class GetBookingByIdUseCase implements LoadBookingByIdPort {
     }
 
     @Override
-    public Mono<Booking> getBookingById(String id) {
+    public Booking getBookingById(String id) {
         return loadBookingByIdPort.findById(id);
     }
 
     @Override
-    public Flux<Booking> getBookingByPropertyId(String id) {
+    public List<Booking> getBookingByPropertyId(String id) {
         return loadBookingByIdPort.findByPropertyId(id);
     }
 }

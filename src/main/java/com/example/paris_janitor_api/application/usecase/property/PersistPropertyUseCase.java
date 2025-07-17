@@ -3,7 +3,6 @@ package com.example.paris_janitor_api.application.usecase.property;
 import com.example.paris_janitor_api.application.port.in.property.PersistPropertyPort;
 import com.example.paris_janitor_api.core.model.Property;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 
 @Service
@@ -16,7 +15,7 @@ public class PersistPropertyUseCase implements PersistPropertyPort {
    }
 
     @Override
-    public Mono<Property> save(Property property) {
+    public Property save(Property property) {
        return persistPropertyPort.saveProperty(property);
     }
 }

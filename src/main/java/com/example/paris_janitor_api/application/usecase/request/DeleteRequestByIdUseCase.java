@@ -2,9 +2,7 @@ package com.example.paris_janitor_api.application.usecase.request;
 
 import com.example.paris_janitor_api.application.port.in.request.DeleteRequestByIdPort;
 import com.example.paris_janitor_api.application.port.out.request.DeleteByIdRequestPort;
-import com.example.paris_janitor_api.core.model.Request;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 @Service
 public class DeleteRequestByIdUseCase implements DeleteRequestByIdPort {
@@ -17,7 +15,7 @@ public class DeleteRequestByIdUseCase implements DeleteRequestByIdPort {
 
 
     @Override
-    public Mono<Request> deleteById(String id) {
-        return deleteByIdRequestPort.deleteById(id);
+    public void deleteById(String id) {
+        deleteByIdRequestPort.deleteById(id);
     }
 }
